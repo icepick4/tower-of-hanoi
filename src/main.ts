@@ -3,6 +3,7 @@ const input = document.querySelector("input");
 var hanoi : Hanoi;
 //add event listsner on the canvas to check if we clicked on a disk
 canvas.addEventListener("click",function(e){
+    console.log(JSON.stringify(hanoi.towers));
     //get the mouse position
     var mousePos = getMousePos(canvas,e);
     //get the x and y position of the mouse
@@ -12,21 +13,44 @@ canvas.addEventListener("click",function(e){
     if(input != null){
         var n : number = Number(input.value);
     }
-    //check if we clicked on a disk
-    for(var i = 0; i < 3; i++){
-        for(var j = 0; j < n ; j++){
-            if(x > (i*100) && x < ((i*100)+100) && y > (j*100) && y < ((j*100)+100)){
-                if(hanoi.clicked1 == null){
-                    hanoi.setClicked(hanoi.towers[i][j].width);
-                }
-                else{
-                    if(hanoi.can_move(hanoi.clicked1, hanoi.towers[i][j].width)){
-                        hanoi.move(hanoi.clicked1, hanoi.towers[i][j].width);
-                        hanoi.draw();
-                        hanoi.clicked1 = null;
-                    }
-                }
+    //check if we clicked on a column
+    if(x >= 0 && x <= canvas.width/3){+
+        console.log("je clique sur la première colonne");
+        if(hanoi.clicked1 == null){
+            hanoi.setClicked(0);
+        }
+        else{
+            if(hanoi.can_move(hanoi.clicked1,0)){
+                hanoi.move(hanoi.clicked1, 0);
+                hanoi.draw();
             }
+            hanoi.clicked1 = null;
+        }
+    }
+    else if(x >= canvas.width/3 && x <= 2*canvas.width/3){
+        console.log("je clique sur la deuxième colonne");
+        if(hanoi.clicked1 == null){
+            hanoi.setClicked(1);
+        }
+        else{
+            if(hanoi.can_move(hanoi.clicked1,1)){
+                hanoi.move(hanoi.clicked1, 1);
+                hanoi.draw();
+            }
+            hanoi.clicked1 = null;
+        }
+    }
+    else{
+        console.log("je clique sur la troisième colonne");
+        if(hanoi.clicked1 == null){
+            hanoi.setClicked(2);
+        }
+        else{
+            if(hanoi.can_move(hanoi.clicked1,2)){
+                hanoi.move(hanoi.clicked1, 2);
+                hanoi.draw();
+            }
+            hanoi.clicked1 = null;
         }
     }
 });
@@ -55,8 +79,8 @@ class Hanoi{
         //init towers depending on n
         this.canvas = canvas;
         this.towers = [];
-        let disk_array : Array<Disk> = [];
         for(var i = 0; i < 3; i++){
+            let disk_array : Array<Disk> = [];
             this.towers.push(disk_array);
         }
         for(var i = 0; i < this.n; i++){
@@ -64,9 +88,8 @@ class Hanoi{
             var r = Math.floor(Math.random() * 255);
             var g = Math.floor(Math.random() * 255);
             var b = Math.floor(Math.random() * 255);
-            this.towers[0].push(new Disk(i + 1, "rgb(" + r + ", " + g + ", " + b + ")"));
+            this.towers[0].push(new Disk(this.n - i, "rgb(" + r + ", " + g + ", " + b + ")"));
         }
-        console.log(this.towers.length);
         this.moves = 0;
         this.solved = false;
         this.clicked1 = null;
@@ -76,21 +99,20 @@ class Hanoi{
         this.clicked1 = i;
     }
 
-    reset(){
-        
-    }
-
     can_move(from : number, to : number){
         if(this.towers[from].length == 0){
             return false;
         }
-        if(this.towers[to].length == 0){
+        else if(this.towers[to].length == 0){
             return true;
         }
-        return this.towers[from][this.towers[from].length - 1] < this.towers[to][this.towers[to].length - 1];
+        else{
+            return this.towers[from][this.towers[from].length - 1].width < this.towers[to][this.towers[to].length - 1].width;
+        }
     }
 
     move(from : number, to : number){
+        console.log("j'ai boug");
         this.towers[to].push(this.towers[from].pop() as Disk);
         this.moves++;
         if(this.towers[to].length == this.n){
@@ -112,26 +134,26 @@ class Hanoi{
         ctx.fillText("N: " + this.n, 20, 150);
         //draw 3 towers with tiny verticals lines
         ctx.fillStyle = "black";
-        ctx.fillRect(this.canvas.width / 2 - 250, 400, 10, this.canvas.height / 2);
+        ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
         ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
-        ctx.fillRect(this.canvas.width / 2 + 250, 400, 10, this.canvas.height / 2);
+        ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
         //draw the disks on the lines
         for(var i = 0; i < this.towers[0].length; i++){
             ctx.fillStyle = this.towers[0][i].color;
-            var x = this.canvas.width / 2 - 250 - 30 * this.towers[0][i].width +5;
-            var y = this.canvas.height - (this.n - i) * 30;
+            var x = this.canvas.width / 2 - 350 - 30 * this.towers[0][i].width +5;
+            var y = this.canvas.height - (i + 1) * 30;
             ctx.fillRect(x, y, this.towers[0][i].width * 60, 30);
         }
         for(var i = 0; i < this.towers[1].length; i++){
-            ctx.fillStyle = this.towers[0][i].color;
-            var x = this.canvas.width / 2 - 250 - 30 * (i + 1) +5;
-            var y = this.canvas.height - (this.n - i) * 30;
+            ctx.fillStyle = this.towers[1][i].color;
+            var x = this.canvas.width / 2  - 30 * this.towers[1][i].width +5;
+            var y = this.canvas.height - (i + 1) * 30;
             ctx.fillRect(x, y, this.towers[1][i].width * 60, 30);
         }
         for(var i = 0; i < this.towers[2].length; i++){
-            ctx.fillStyle = this.towers[0][i].color;
-            var x = this.canvas.width / 2 - 250 - 30 * (i + 1) +5;
-            var y = this.canvas.height - (this.n - i) * 30;
+            ctx.fillStyle = this.towers[2][i].color;
+            var x = this.canvas.width / 2 + 350 - 30 * this.towers[2][i].width +5;
+            var y = this.canvas.height - (i + 1) * 30;
             ctx.fillRect(x, y, this.towers[2][i].width * 60, 30);
         }
     }
@@ -159,15 +181,6 @@ class Disk{
 
     setY(y : number){
         this.y = y;
-    }
-
-    clicked(x : number, y : number){
-        if(this.x != null && this.y != null){
-            if(x > this.x && x < this.x + this.width * 60 && y > this.y && y < this.y + 30){
-                return true;
-            }
-        }
-        return false;
     }
 }
 
