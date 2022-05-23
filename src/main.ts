@@ -1,5 +1,7 @@
 var canvas : HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
 const input = document.querySelector("input");
+const won : HTMLElement = document.getElementById("won") as HTMLElement;
+
 var hanoi : Hanoi;
 //add event listsner on the canvas to check if we clicked on a disk
 canvas.addEventListener("click",function(e){
@@ -81,10 +83,13 @@ const HEIGHT = 100;
 
 function play(){
     if(input != null){
-        var n : number = Number(input.value);
-        hanoi = new Hanoi(n,canvas);
-        hanoi.draw(-1);
+        var n : number = Number(input.value); 
+        if(n > 0 && n < 7){
+            hanoi = new Hanoi(n,canvas);
+            hanoi.draw(-1);
+        } 
     }
+    won.style.display = "none";
 }
 
 class Hanoi{
@@ -137,6 +142,9 @@ class Hanoi{
         this.moves++;
         if(this.towers[2].length == this.n){
             this.solved = true;
+            //display #won 
+            won.style.display = "block";
+
         }
     }
 
@@ -155,34 +163,34 @@ class Hanoi{
         //hover is the column we are hovering
         if(hover == 0){
             ctx.fillStyle = "red";
-            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 - 450, 250, 10, 600);
             ctx.fillStyle = "black";
-            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
-            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2, 250, 10, 600);
+            ctx.fillRect(this.canvas.width / 2 + 450, 250, 10, 600);
         }
         else if(hover == 1){
-            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 - 450, 250, 10, 600);
             ctx.fillStyle = "red";
-            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2, 250, 10, 600);
             ctx.fillStyle = "black";
-            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 + 450, 250, 10, 600);
         }
         else if(hover == 2){
-            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
-            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 - 450, 250, 10, 600);
+            ctx.fillRect(this.canvas.width / 2, 250, 10, 600);
             ctx.fillStyle = "red";
-            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 + 450, 250, 10, 600);
         }
         else{
-            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
-            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
-            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 - 450, 250, 10, 600);
+            ctx.fillRect(this.canvas.width / 2, 250, 10, 600);
+            ctx.fillRect(this.canvas.width / 2 + 450, 250, 10, 600);
         }
         
         //draw the disks on the lines
         for(var i = 0; i < this.towers[0].length; i++){
             ctx.fillStyle = this.towers[0][i].color;
-            var x = this.canvas.width / 2 - 350 - 30 * this.towers[0][i].width +5;
+            var x = this.canvas.width / 2 -450 - 30 * this.towers[0][i].width +5;
             var y = this.canvas.height - (i + 1) * 30;
             ctx.fillRect(x, y, this.towers[0][i].width * 60, 30);
         }
@@ -194,7 +202,7 @@ class Hanoi{
         }
         for(var i = 0; i < this.towers[2].length; i++){
             ctx.fillStyle = this.towers[2][i].color;
-            var x = this.canvas.width / 2 + 350 - 30 * this.towers[2][i].width +5;
+            var x = this.canvas.width / 2 +450 - 30 * this.towers[2][i].width +5;
             var y = this.canvas.height - (i + 1) * 30;
             ctx.fillRect(x, y, this.towers[2][i].width * 60, 30);
         }
