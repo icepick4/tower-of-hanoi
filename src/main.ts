@@ -22,7 +22,7 @@ canvas.addEventListener("click",function(e){
         else{
             if(hanoi.can_move(hanoi.clicked1,0)){
                 hanoi.move(hanoi.clicked1, 0);
-                hanoi.draw();
+                hanoi.draw(-1);
             }
             hanoi.clicked1 = null;
         }
@@ -35,7 +35,7 @@ canvas.addEventListener("click",function(e){
         else{
             if(hanoi.can_move(hanoi.clicked1,1)){
                 hanoi.move(hanoi.clicked1, 1);
-                hanoi.draw();
+                hanoi.draw(-1);
             }
             hanoi.clicked1 = null;
         }
@@ -48,11 +48,31 @@ canvas.addEventListener("click",function(e){
         else{
             if(hanoi.can_move(hanoi.clicked1,2)){
                 hanoi.move(hanoi.clicked1, 2);
-                hanoi.draw();
+                hanoi.draw(-1);
             }
             hanoi.clicked1 = null;
         }
     }
+});
+
+//add hover listener on the canvas
+canvas.addEventListener("mousemove",function(e){
+    //get the mouse position
+    var mousePos = getMousePos(canvas,e);
+    //get the x and y position of the mouse
+    var x = mousePos.x;
+    var y = mousePos.y;
+    //check if we hover a column
+    if(x >= 0 && x <= canvas.width/3){
+        hanoi.draw(0);
+    }
+    else if(x >= canvas.width/3 && x <= 2*canvas.width/3){
+        hanoi.draw(1);
+    }
+    else{
+        hanoi.draw(2);
+    }
+
 });
 
 
@@ -63,7 +83,7 @@ function play(){
     if(input != null){
         var n : number = Number(input.value);
         hanoi = new Hanoi(n,canvas);
-        hanoi.draw();
+        hanoi.draw(-1);
     }
 }
 
@@ -115,12 +135,12 @@ class Hanoi{
         console.log("j'ai boug");
         this.towers[to].push(this.towers[from].pop() as Disk);
         this.moves++;
-        if(this.towers[to].length == this.n){
+        if(this.towers[2].length == this.n){
             this.solved = true;
         }
     }
 
-    draw(){
+    draw(hover : number){
         var ctx = this.canvas.getContext("2d");
         if(ctx == null){
             return;
@@ -132,11 +152,33 @@ class Hanoi{
         ctx.fillText("Moves: " + this.moves, 20, 50);
         ctx.fillText("Solved: " + this.solved, 20, 100);
         ctx.fillText("N: " + this.n, 20, 150);
-        //draw 3 towers with tiny verticals lines
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
-        ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
-        ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+        //hover is the column we are hovering
+        if(hover == 0){
+            ctx.fillStyle = "red";
+            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
+            ctx.fillStyle = "black";
+            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+        }
+        else if(hover == 1){
+            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
+            ctx.fillStyle = "red";
+            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
+            ctx.fillStyle = "black";
+            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+        }
+        else if(hover == 2){
+            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
+            ctx.fillStyle = "red";
+            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+        }
+        else{
+            ctx.fillRect(this.canvas.width / 2 - 350, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2, 400, 10, this.canvas.height / 2);
+            ctx.fillRect(this.canvas.width / 2 + 350, 400, 10, this.canvas.height / 2);
+        }
+        
         //draw the disks on the lines
         for(var i = 0; i < this.towers[0].length; i++){
             ctx.fillStyle = this.towers[0][i].color;
