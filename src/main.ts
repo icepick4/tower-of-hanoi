@@ -139,17 +139,6 @@ class Hanoi{
             if(i == hover){
                 ctx.fillStyle = "red";
             }
-            else if(this.clicked1 != null){
-                if(i - 450 == this.clicked1){
-                    ctx.fillStyle = "blue";
-                }
-                else if(i == this.clicked1){
-                    ctx.fillStyle = "blue";
-                }
-                else if (i + 450 == this.clicked1){
-                    ctx.fillStyle = "blue";
-                }
-            }
             else{
                 ctx.fillStyle = "black";
             }
