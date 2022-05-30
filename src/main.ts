@@ -1,93 +1,162 @@
-var canvas : HTMLCanvasElement = document.getElementById("canvas") as HTMLCanvasElement;
-var canvas2 : HTMLCanvasElement = document.getElementById("canvas2") as HTMLCanvasElement;
 const input = document.querySelector("input");
 const won : HTMLElement = document.getElementById("won") as HTMLElement;
+const BTN_PLAY : HTMLElement = document.getElementById("play") as HTMLElement;
+const CONTAINER_DISKS : HTMLElement = document.getElementById("disks") as HTMLElement;
+const PIC1 : HTMLElement = document.getElementById("pic1") as HTMLElement;
+const PIC2 : HTMLElement = document.getElementById("pic2") as HTMLElement;
+const PIC3 : HTMLElement = document.getElementById("pic3") as HTMLElement;
 
-var hanoi : Hanoi;
-//add event listsner on the canvas to check if we clicked on a disk
-canvas.addEventListener("click",function(e){
-    console.log(JSON.stringify(hanoi.towers));
-    //get the mouse position
-    var mousePos = getMousePos(canvas,e);
-    //get the x and y position of the mouse
-    var x = mousePos.x;
-    //check if we clicked on a column
-    if(x >= 0 && x <= canvas.width/3){+
-        move(0);
-    }
-    else if(x >= canvas.width/3 && x <= 2*canvas.width/3){
-        move(1);
-    }
-    else{
-        move(2);        
+BTN_PLAY.addEventListener("click", play);
+
+PIC1.addEventListener("mouseover", function(e){
+    var bg = PIC1.style.backgroundColor;
+    if(bg != "blue"){
+        PIC1.style.backgroundColor = "red";
     }
 });
+PIC1.addEventListener("mouseout", function(e){
+    var bg = PIC1.style.backgroundColor;
+    if(bg != "blue"){
+        PIC1.style.backgroundColor = "black";
+    }
+});
+PIC2.addEventListener("mouseout", function(e){
+    var bg = PIC2.style.backgroundColor;
+    if(bg != "blue"){
+        PIC2.style.backgroundColor = "black";
+    }
+});
+PIC2.addEventListener("mouseover", function(e){
+    var bg = PIC2.style.backgroundColor;
+    if(bg != "blue"){
+        PIC2.style.backgroundColor = "red";
+    }
+});
+PIC3.addEventListener("mouseout", function(e){
+    var bg = PIC3.style.backgroundColor;
+    if(bg != "blue"){
+        PIC3.style.backgroundColor = "black";
+    }
+});
+PIC3.addEventListener("mouseover", function(e){
+    var bg = PIC3.style.backgroundColor;
+    if(bg != "blue"){
+        PIC3.style.backgroundColor = "red";
+    }
+});
+
+PIC1.addEventListener("click", function(e){
+    //get bg of pic1
+    var bg = PIC1.style.backgroundColor;
+    if(bg == "blue"){
+        PIC1.style.backgroundColor = "black";
+    }
+    else{
+        PIC1.style.backgroundColor = "blue";
+    }
+    move(0);
+});
+PIC2.addEventListener("click", function(e){
+    var bg = PIC2.style.backgroundColor;
+    if(bg == "blue"){
+        PIC2.style.backgroundColor = "black";
+    }
+    else{
+        PIC2.style.backgroundColor = "blue";
+    }
+    move(1);
+});
+PIC3.addEventListener("click", function(e){
+    var bg = PIC3.style.backgroundColor;
+    if(bg == "blue"){
+        PIC3.style.backgroundColor = "black";
+    }
+    else{
+        PIC3.style.backgroundColor = "blue";
+    }
+    move(2);
+});
+
+//event listener on resize window
+window.addEventListener("resize", function(e){
+    hanoi.draw();
+});
+
+
+var hanoi : Hanoi;
 
 function move(col : number){
     if(hanoi.clicked1 == null){
         hanoi.setClicked(col);
     }
     else{
+        unselectAll();
         if(hanoi.can_move(hanoi.clicked1,col)){
             hanoi.move(hanoi.clicked1, col);
-            hanoi.draw(-1);
+            hanoi.draw();
         }
         hanoi.clicked1 = null;
     }
 }
 
-//add hover listener on the canvas
-canvas.addEventListener("mousemove",function(e){
-    //get the mouse position
-    var mousePos = getMousePos(canvas,e);
-    //get the x and y position of the mouse
-    var x = mousePos.x;
-    var y = mousePos.y;
-    //check if we hover a column
-    if(x >= 0 && x <= canvas.width/3){
-        hanoi.draw(-450);
-    }
-    else if(x >= canvas.width/3 && x <= 2*canvas.width/3){
-        hanoi.draw(0);
-    }
-    else{
-        hanoi.draw(450);
-    }
-});
+function unselectAll(){
+    PIC1.style.backgroundColor = "black";
+    PIC2.style.backgroundColor = "black";
+    PIC3.style.backgroundColor = "black";
+}
+
 
 function play(){
+    //clear div with id "disks"
+    CONTAINER_DISKS.innerHTML = "";
+    unselectAll();
+    won.innerHTML = "Moves : 0";
     if(input != null){
         var n : number = Number(input.value); 
         if(n > 0 && n <= 7){
-            hanoi = new Hanoi(n,canvas);
-            hanoi.draw(-1);
+            hanoi = new Hanoi(n);
+            hanoi.draw();
         } 
     }
-    won.style.display = "none";
 }
 
 class Hanoi{
     n: number;
-    canvas: HTMLCanvasElement;
     clicked1 : number | null ;
-    towers : Array<Array<Disk>>;
+    towers : Array<Array<number>>;
     moves : number;
     solved : boolean;
-    constructor(n : number, canvas : HTMLCanvasElement){
+    constructor(n : number){
         this.n = n;
-        //init towers depending on n
-        this.canvas = canvas;
         this.towers = [];
         for(var i = 0; i < 3; i++){
-            let disk_array : Array<Disk> = [];
+            let disk_array : Array<number> = [];
             this.towers.push(disk_array);
         }
         for(var i = 0; i < this.n; i++){
+            this.towers[0].push(this.n - i);
+
+            //i into string
+            var str = (this.n-i).toString();
+            //create a new div with id disk_i
+            var div = document.createElement("div");
+            div.id = "disk_" + str;
+
             //random color for fillStyle
             var r = Math.floor(Math.random() * 255);
             var g = Math.floor(Math.random() * 255);
             var b = Math.floor(Math.random() * 255);
-            this.towers[0].push(new Disk(this.n - i, "rgb(" + r + ", " + g + ", " + b + ")"));
+            div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
+
+            div.style.width = (this.n - i) * 60 + "px";
+            div.style.height = "45px";
+            div.style.position = "absolute";
+
+            div.style.bottom = (i) * 45 + 30 - 10 + "px";
+            div.style.left = screen.width / 6 - (this.n - i) * 30 + 2.5 + "px";
+            div.style.zIndex = "1";
+
+            CONTAINER_DISKS.appendChild(div);
         }
         this.moves = 0;
         this.solved = false;
@@ -106,72 +175,38 @@ class Hanoi{
             return true;
         }
         else{
-            return this.towers[from][this.towers[from].length - 1].width < this.towers[to][this.towers[to].length - 1].width;
+            return this.towers[from][this.towers[from].length - 1] < this.towers[to][this.towers[to].length - 1];
         }
     }
 
     move(from : number, to : number){
-        console.log("j'ai boug");
-        this.towers[to].push(this.towers[from].pop() as Disk);
+        this.towers[to].push(this.towers[from].pop() as number);
         this.moves++;
+        won.innerHTML = "Moves : " + this.moves.toString();
         if(this.towers[2].length == this.n){
             this.solved = true;
             //display #won 
-            won.style.display = "block";
-
+            won.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
     }
 
-    draw(hover : number){
-        var ctx = this.canvas.getContext("2d");
-        if(ctx == null){
-            return;
-        }
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        ctx.fillStyle = "black";
-        ctx.font = "30px Arial";
-        ctx.fillText("Moves: " + this.moves, 20, 50);
-        ctx.fillText("Solved: " + this.solved, 20, 100);
-        ctx.fillText("N: " + this.n, 20, 150);
-
-        for(var i = - 450; i <= 450; i=i+450){
-            if(i == hover){
-                ctx.fillStyle = "red";
-            }
-            else{
-                ctx.fillStyle = "black";
-            }
-            ctx.fillRect(this.canvas.width / 2 + i, 250, 10, 600);
-        }
-        
+    draw(){
         //draw the disks on the lines
         for(var i = 0; i < this.towers[0].length; i++){
-            ctx.fillStyle = this.towers[0][i].color;
-            var x = this.canvas.width / 2 -450 - 30 * this.towers[0][i].width +5;
-            var y = this.canvas.height - (i + 1) * 30;
-            ctx.fillRect(x, y, this.towers[0][i].width * 60, 30);
+            var div : HTMLElement = document.getElementById("disk_" + (this.towers[0][i]).toString() ) as HTMLElement;
+            div.style.bottom = (i) * 45 + 30 - 10 + "px";
+            div.style.left = document.body.clientWidth / 6.060606 - div.offsetWidth / 2 + 15 + "px";
         }
         for(var i = 0; i < this.towers[1].length; i++){
-            ctx.fillStyle = this.towers[1][i].color;
-            var x = this.canvas.width / 2  - 30 * this.towers[1][i].width +5;
-            var y = this.canvas.height - (i + 1) * 30;
-            ctx.fillRect(x, y, this.towers[1][i].width * 60, 30);
+            var div : HTMLElement = document.getElementById("disk_" + (this.towers[1][i]).toString() ) as HTMLElement;
+            div.style.bottom = (i) * 45 + 30 - 10 + "px";
+            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + 15 + "px";
         }
         for(var i = 0; i < this.towers[2].length; i++){
-            ctx.fillStyle = this.towers[2][i].color;
-            var x = this.canvas.width / 2 +450 - 30 * this.towers[2][i].width +5;
-            var y = this.canvas.height - (i + 1) * 30;
-            ctx.fillRect(x, y, this.towers[2][i].width * 60, 30);
+            var div : HTMLElement = document.getElementById("disk_" + (this.towers[2][i]).toString() ) as HTMLElement;
+            div.style.bottom = (i) * 45 + 30 - 10 + "px";
+            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + 15 + "px";
         }
-
-        //draw a rectangle under the game
-        var ctx2 = canvas2.getContext("2d");
-        if(ctx2 == null){
-            return;
-        }
-        ctx2.fillStyle = "black";
-        ctx2.fillRect(0, 0, canvas2.width, canvas2.height);
     }
 
     isSolved(){
@@ -179,32 +214,5 @@ class Hanoi{
     }
 }
 
-class Disk{
-    width : number;
-    color : string;
-    x : number | null;
-    y : number | null;
-    constructor(width : number, color : string){
-        this.width = width;
-        this.color = color;
-        this.x = null;
-        this.y = null;
-    }
 
-    setX(x : number){
-        this.x = x;
-    }
-
-    setY(y : number){
-        this.y = y;
-    }
-}
-
-function getMousePos(canvas: HTMLCanvasElement, e: MouseEvent) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
-}
 
