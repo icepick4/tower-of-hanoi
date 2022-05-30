@@ -21,7 +21,7 @@
 #pic3 {
     position: absolute;
     bottom: 20px;
-    left: 84%;
+    left: 80%;
     width: 30px;
     height: 350px;
     z-index: 1;
@@ -41,5 +41,5 @@
 
 body {
     /*no scroll*/
-
+    overflow: hidden;
 }

@@ -74,6 +74,10 @@ PIC3.addEventListener("click", function (e) {
     }
     move(2);
 });
+//event listener on resize window
+window.addEventListener("resize", function (e) {
+    hanoi.draw();
+});
 var hanoi;
 function move(col) {
     if (hanoi.clicked1 == null) {
@@ -153,7 +157,6 @@ class Hanoi {
         }
     }
     move(from, to) {
-        console.log("j'ai boug");
         this.towers[to].push(this.towers[from].pop());
         this.moves++;
         won.innerHTML = "Moves : " + this.moves.toString();
@@ -166,20 +169,19 @@ class Hanoi {
     draw() {
         //draw the disks on the lines
         for (var i = 0; i < this.towers[0].length; i++) {
-            console.log(this.towers[0].length - i);
             var div = document.getElementById("disk_" + (this.towers[0][i]).toString());
             div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 6 - div.offsetWidth / 2 + 5 + "px";
+            div.style.left = document.body.clientWidth / 6.060606 - div.offsetWidth / 2 + 15 + "px";
         }
         for (var i = 0; i < this.towers[1].length; i++) {
             var div = document.getElementById("disk_" + (this.towers[1][i]).toString());
             div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 2 - div.offsetWidth / 2 - 5 + "px";
+            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + 15 + "px";
         }
         for (var i = 0; i < this.towers[2].length; i++) {
             var div = document.getElementById("disk_" + (this.towers[2][i]).toString());
             div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 6 * 5 - div.offsetWidth / 2 - 7.5 + "px";
+            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + 15 + "px";
         }
     }
     isSolved() {

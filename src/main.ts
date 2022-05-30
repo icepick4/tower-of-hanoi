@@ -5,7 +5,9 @@ const CONTAINER_DISKS : HTMLElement = document.getElementById("disks") as HTMLEl
 const PIC1 : HTMLElement = document.getElementById("pic1") as HTMLElement;
 const PIC2 : HTMLElement = document.getElementById("pic2") as HTMLElement;
 const PIC3 : HTMLElement = document.getElementById("pic3") as HTMLElement;
+
 BTN_PLAY.addEventListener("click", play);
+
 PIC1.addEventListener("mouseover", function(e){
     var bg = PIC1.style.backgroundColor;
     if(bg != "blue"){
@@ -73,6 +75,11 @@ PIC3.addEventListener("click", function(e){
         PIC3.style.backgroundColor = "blue";
     }
     move(2);
+});
+
+//event listener on resize window
+window.addEventListener("resize", function(e){
+    hanoi.draw();
 });
 
 
@@ -173,7 +180,6 @@ class Hanoi{
     }
 
     move(from : number, to : number){
-        console.log("j'ai boug");
         this.towers[to].push(this.towers[from].pop() as number);
         this.moves++;
         won.innerHTML = "Moves : " + this.moves.toString();
@@ -187,20 +193,19 @@ class Hanoi{
     draw(){
         //draw the disks on the lines
         for(var i = 0; i < this.towers[0].length; i++){
-            console.log(this.towers[0].length - i);
             var div : HTMLElement = document.getElementById("disk_" + (this.towers[0][i]).toString() ) as HTMLElement;
             div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 6 - div.offsetWidth / 2 + 5 + "px";
+            div.style.left = document.body.clientWidth / 6.060606 - div.offsetWidth / 2 + 15 + "px";
         }
         for(var i = 0; i < this.towers[1].length; i++){
             var div : HTMLElement = document.getElementById("disk_" + (this.towers[1][i]).toString() ) as HTMLElement;
             div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 2 - div.offsetWidth / 2 - 5 + "px";
+            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + 15 + "px";
         }
         for(var i = 0; i < this.towers[2].length; i++){
             var div : HTMLElement = document.getElementById("disk_" + (this.towers[2][i]).toString() ) as HTMLElement;
             div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 6 * 5 - div.offsetWidth / 2 - 7.5 + "px";
+            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + 15 + "px";
         }
     }
 
