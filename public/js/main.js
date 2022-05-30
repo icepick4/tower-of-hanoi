@@ -7,76 +7,45 @@ const PIC1 = document.getElementById("pic1");
 const PIC2 = document.getElementById("pic2");
 const PIC3 = document.getElementById("pic3");
 BTN_PLAY.addEventListener("click", play);
-PIC1.addEventListener("mouseover", function (e) {
-    var bg = PIC1.style.backgroundColor;
-    if (bg != "blue") {
-        PIC1.style.backgroundColor = "red";
-    }
-});
-PIC1.addEventListener("mouseout", function (e) {
-    var bg = PIC1.style.backgroundColor;
-    if (bg != "blue") {
-        PIC1.style.backgroundColor = "black";
-    }
-});
-PIC2.addEventListener("mouseout", function (e) {
-    var bg = PIC2.style.backgroundColor;
-    if (bg != "blue") {
-        PIC2.style.backgroundColor = "black";
-    }
-});
-PIC2.addEventListener("mouseover", function (e) {
-    var bg = PIC2.style.backgroundColor;
-    if (bg != "blue") {
-        PIC2.style.backgroundColor = "red";
-    }
-});
-PIC3.addEventListener("mouseout", function (e) {
-    var bg = PIC3.style.backgroundColor;
-    if (bg != "blue") {
-        PIC3.style.backgroundColor = "black";
-    }
-});
-PIC3.addEventListener("mouseover", function (e) {
-    var bg = PIC3.style.backgroundColor;
-    if (bg != "blue") {
-        PIC3.style.backgroundColor = "red";
-    }
-});
-PIC1.addEventListener("click", function (e) {
+PIC1.addEventListener("mouseover", mouseHover);
+PIC1.addEventListener("mouseout", mouseOut);
+PIC2.addEventListener("mouseover", mouseHover);
+PIC2.addEventListener("mouseout", mouseOut);
+PIC3.addEventListener("mouseover", mouseHover);
+PIC3.addEventListener("mouseout", mouseOut);
+PIC1.addEventListener("click", clickPic);
+PIC2.addEventListener("click", clickPic);
+PIC3.addEventListener("click", clickPic);
+function clickPic(ev) {
     //get bg of pic1
-    var bg = PIC1.style.backgroundColor;
+    var bg = this.style.backgroundColor;
+    var pic = Number(ev.target.id.substring(3)) - 1;
     if (bg == "blue") {
-        PIC1.style.backgroundColor = "black";
+        this.style.backgroundColor = "black";
     }
     else {
-        PIC1.style.backgroundColor = "blue";
+        this.style.backgroundColor = "blue";
     }
-    move(0);
-});
-PIC2.addEventListener("click", function (e) {
-    var bg = PIC2.style.backgroundColor;
-    if (bg == "blue") {
-        PIC2.style.backgroundColor = "black";
+    move(pic);
+}
+function mouseHover() {
+    var bg = this.style.backgroundColor;
+    if (bg != "blue") {
+        this.style.backgroundColor = "red";
     }
-    else {
-        PIC2.style.backgroundColor = "blue";
+}
+function mouseOut() {
+    var bg = this.style.backgroundColor;
+    if (bg != "blue") {
+        this.style.backgroundColor = "black";
     }
-    move(1);
-});
-PIC3.addEventListener("click", function (e) {
-    var bg = PIC3.style.backgroundColor;
-    if (bg == "blue") {
-        PIC3.style.backgroundColor = "black";
-    }
-    else {
-        PIC3.style.backgroundColor = "blue";
-    }
-    move(2);
-});
+}
 //event listener on resize window
 window.addEventListener("resize", function (e) {
     hanoi.draw();
+    PIC1.style.width = (document.body.clientWidth / 50) + "px";
+    PIC2.style.width = (document.body.clientWidth / 50) + "px";
+    PIC3.style.width = (document.body.clientWidth / 50) + "px";
 });
 var hanoi;
 function move(col) {
@@ -130,8 +99,9 @@ class Hanoi {
             var g = Math.floor(Math.random() * 255);
             var b = Math.floor(Math.random() * 255);
             div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
-            div.style.width = (this.n - i) * 60 + "px";
-            div.style.height = "45px";
+            div.style.border = "1px solid black";
+            div.style.width = (document.body.clientWidth) * (this.n - 1) / 25 + 10 + "px";
+            div.style.height = (document.body.clientWidth) / 33.333 + "px";
             div.style.position = "absolute";
             div.style.bottom = (i) * 45 + 30 - 10 + "px";
             div.style.left = screen.width / 6 - (this.n - i) * 30 + 2.5 + "px";
@@ -170,21 +140,24 @@ class Hanoi {
         //draw the disks on the lines
         for (var i = 0; i < this.towers[0].length; i++) {
             var div = document.getElementById("disk_" + (this.towers[0][i]).toString());
-            div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = document.body.clientWidth / 6.060606 - div.offsetWidth / 2 + 15 + "px";
+            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+            div.style.width = (document.body.clientWidth) * (this.towers[0][i]) / 25 + 10 + "px";
+            div.style.height = (document.body.clientWidth) / 33.333 + "px";
+            div.style.left = document.body.clientWidth / 6 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
         }
         for (var i = 0; i < this.towers[1].length; i++) {
             var div = document.getElementById("disk_" + (this.towers[1][i]).toString());
-            div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + 15 + "px";
+            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+            div.style.width = (document.body.clientWidth) * (this.towers[1][i]) / 25 + 10 + "px";
+            div.style.height = (document.body.clientWidth) / 33.333 + "px";
+            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
         }
         for (var i = 0; i < this.towers[2].length; i++) {
             var div = document.getElementById("disk_" + (this.towers[2][i]).toString());
-            div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + 15 + "px";
+            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+            div.style.width = (document.body.clientWidth) * (this.towers[2][i]) / 25 + 10 + "px";
+            div.style.height = (document.body.clientWidth) / 33.333 + "px";
+            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
         }
-    }
-    isSolved() {
-        return this.solved;
     }
 }
