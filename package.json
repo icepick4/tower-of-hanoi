@@ -34,7 +34,7 @@
     },
     "nodemonConfig": {
         "ignore": [
-            "drag-and-drop/public/js/*.js"
+            "public/js/*.js"
         ]
     }
 }
