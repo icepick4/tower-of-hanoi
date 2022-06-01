@@ -1,4 +1,4 @@
-const won: HTMLElement = document.getElementById("won") as HTMLElement;
+// const won: HTMLElement = document.getElementById("won") as HTMLElement;
 import { Disk } from "./disk";
 export class Hanoi {
     n: number;
@@ -12,12 +12,14 @@ export class Hanoi {
             let disk_array: Array<Disk> = [];
             this.towers.push(disk_array);
         }
-        this.towers[0] = disks;
+        for(var i = 0; i < disks.length; i++) {
+            this.towers[0].push(disks[i]);
+        }
         this.moves = 0;
         this.solved = false;
     }
 
-    can_move(from: number, to: number) {
+    canMove(from: number, to: number) {
         if (this.towers[from].length == 0) {
             return false;
         }
@@ -25,20 +27,23 @@ export class Hanoi {
             return true;
         }
         else {
-            return this.towers[from][this.towers[from].length - 1] < this.towers[to][this.towers[to].length - 1];
+            return this.towers[from][this.towers[from].length - 1].index > this.towers[to][this.towers[to].length - 1].index;
         }
     }
 
     move(from: number, to: number) {
-
-        this.towers[to].push(this.towers[from].pop() as Disk);
-
+        var disk = this.towers[from].pop() as Disk;
+        this.towers[to].push(disk);
         this.moves++;
-        won.innerHTML = "Moves : " + this.moves.toString();
+        // won.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
+            console.log("Solved");
             //display #won 
-            won.innerHTML = "You won in " + this.moves.toString() + " moves!";
+            // won.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
+        console.log("tour 1 : " + this.towers[0].length);
+        console.log("tour 2 : " + this.towers[1].length);
+        console.log("tour 3 : " + this.towers[2].length);
     }
 }

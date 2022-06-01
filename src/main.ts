@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Hanoi } from "./classes/hanoi";
 import { Pic } from "./classes/pic";
 import { Disk } from "./classes/disk";
+import { AsyncDependenciesBlock } from 'webpack';
 
 // const input = document.querySelector("input");
 // const won: HTMLElement = document.getElementById("won") as HTMLElement;
@@ -14,6 +15,7 @@ const geometryPic = new THREE.CylinderGeometry(0.45, 0.45, 10, 45);
 const materialPic = new THREE.MeshPhongMaterial({ color: "gray" });
 const geometryBase = new THREE.CylinderGeometry(7, 7, 0.5, 45);
 const materialBase = new THREE.MeshPhongMaterial({ color: "black" });
+
 // BTN_PLAY.addEventListener("click", () => {
 //     won.innerHTML = "Moves : 0";
 //     if (input != null) {
@@ -27,7 +29,10 @@ const materialBase = new THREE.MeshPhongMaterial({ color: "black" });
 // });
 
 var hanoi: Hanoi;
-var selectedDisk: Disk;
+var selectedDisk : Disk | null;
+var movingTop : boolean = false;
+var movingCol : Pic | null = null;
+var canPlace = false;
 
 let renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera, scene: THREE.Scene, controls: OrbitControls, mouse: THREE.Vector2, raycaster: THREE.Raycaster;
 mouse = new THREE.Vector2();
@@ -112,6 +117,12 @@ function init() {
 function render() {
     window.requestAnimationFrame(render);
     raycasting(false);
+    if(movingTop && selectedDisk != null){
+        moveTop(selectedDisk);
+    }
+    if(movingCol != null && selectedDisk != null){
+        moveCol(selectedDisk, movingCol);
+    }
     renderer.render(scene, camera);
 }
 
@@ -128,20 +139,26 @@ function onMouseClick(event: MouseEvent) {
 function raycasting(click: boolean) {
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObject(scene, true);
-
     if (intersects.length > 0) {
         var mesh = intersects[0].object as THREE.Mesh;
-
         for (let disk of disks) {
+            // console.log("le disk " + disk.index + "est hover : " + (disk.mesh == mesh));
+            // console.log("le disk " + disk.index + "est selected : " + (disk == selectedDisk));
             if (disk.mesh != mesh && disk != selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({ color: disk.color });
             }
             else {
-                if (click) {
+                // console.log("col : " + disk.col);
+                // console.log("len de la col : " + hanoi.towers[disk.col].length);
+                // console.log(disk.index);    
+                var diskAtTop = false;
+                diskAtTop = hanoi.towers[disk.col][hanoi.towers[disk.col].length - 1] == disk;
+                if (click && diskAtTop && movingCol == null && selectedDisk == null) {
                     selectedDisk = disk;
+                    movingTop = true;
                 }
                 //check is the disk is on the top of the tower with his index
-                if (hanoi.towers[disk.col][hanoi.towers[disk.col].length - 1] == disk) {
+                if (diskAtTop) {
                     disk.mesh.material = new THREE.MeshPhongMaterial({ color: "green" });
                 }
                 else {
@@ -154,6 +171,25 @@ function raycasting(click: boolean) {
                 pic.mesh.material = materialPic;
             }
             else {
+                if(click && selectedDisk != null){
+                    if(hanoi.canMove(selectedDisk.col, pic.index)){
+                        canPlace = true;
+                        movingCol = pic;
+                        break;
+                    } 
+                    else{
+                        canPlace = false;
+                        if(selectedDisk.col == 0){
+                            movingCol = pics[0];
+                        }
+                        else if(selectedDisk.col == 1){
+                            movingCol = pics[1];
+                        }
+                        else{
+                            movingCol = pics[2];
+                        }
+                    }
+                }
                 pic.mesh.material = new THREE.MeshPhongMaterial({ color: "rgb(160,160,160)" });
             }
         }
@@ -168,6 +204,92 @@ function raycasting(click: boolean) {
             pic.mesh.material = materialPic;
         }
 
+    }
+    
+}
+
+function moveTop(disk : Disk){
+    if(disk.mesh.position.y < 15){
+        disk.mesh.position.y += 0.7;
+    }
+    else{
+        if(disk.mesh.position.x > 0){
+            disk.mesh.position.x -= 0.5;
+        }
+        else if(disk.mesh.position.x < 0){
+            disk.mesh.position.x += 0.5;
+        }
+        else{
+            movingTop = false;
+        }
+    }
+}
+
+function moveCol(disk : Disk, pic : Pic){
+    var lenCol = hanoi.towers[pic.index].length;
+    var distanceY : number;
+    if(canPlace){
+        lenCol++;
+    }
+    if(lenCol == 1){
+        distanceY = lenCol * 1.5;
+    }
+    else{
+        distanceY = lenCol * 1.5;
+    }
+    console.log(distanceY);
+    if(pic.index == 0){
+        if(disk.mesh.position.x < 15){
+            disk.mesh.position.x += 0.5;
+        }
+        else{
+            if(disk.mesh.position.y > distanceY){
+                disk.mesh.position.y -= 0.7;
+            }
+            else{
+                movingCol = null;
+                if(selectedDisk != null && canPlace){
+                    console.log("move disk " + selectedDisk.col + " to " + pic.index);
+                    hanoi.move(selectedDisk.col, pic.index);
+                    disk.col = pic.index;
+                }
+                selectedDisk = null;
+            }
+        }
+    }
+    else if(pic.index == 1){
+        if(disk.mesh.position.y > distanceY){
+            disk.mesh.position.y -= 0.7;
+        }
+        else{
+            movingCol = null;
+            if(selectedDisk != null && canPlace){
+                console.log("move disk " + selectedDisk.col + " to " + pic.index);
+                hanoi.move(selectedDisk.col, pic.index);
+                disk.col = pic.index;
+            }
+
+            selectedDisk = null;
+        }
+    }
+    else{
+        if(disk.mesh.position.x > -15){
+            disk.mesh.position.x -= 0.5;
+        }
+        else{
+            if(disk.mesh.position.y > distanceY){
+                disk.mesh.position.y -= 0.7;
+            }
+            else{
+                movingCol = null;
+                if(selectedDisk != null && canPlace){
+                    console.log("move disk " + selectedDisk.col + " to " + pic.index);
+                    hanoi.move(selectedDisk.col, pic.index);
+                    disk.col = pic.index;
+                }
+                selectedDisk = null;
+            }
+        }
     }
 }
 
