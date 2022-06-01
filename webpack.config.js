@@ -3,10 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
     mode: 'development',
-    entry: {
-        main : './src/main.ts',
-        hanoi : './src/hanoi.ts',
-    },
+    entry: './src/main.ts',
     module: {
         rules: [{
             test: /.ts?$/,
@@ -19,7 +16,7 @@ module.exports = {
     },
     output: {
         publicPath: 'public/js',
-        filename: '[name].js',
+        filename: 'main.js',
         path: path.resolve(__dirname, 'public/js'),
     },
     plugins: [

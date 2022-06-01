@@ -1,32 +1,18 @@
 const won: HTMLElement = document.getElementById("won") as HTMLElement;
-
-
-class Hanoi {
+import { Disk } from "./disk";
+export class Hanoi {
     n: number;
-    towers: Array<Array<number>>;
+    towers: Array<Array<Disk>>;
     moves: number;
     solved: boolean;
-    constructor(n: number) {
+    constructor(n: number, disks: Array<Disk>) {
         this.n = n;
         this.towers = [];
         for (var i = 0; i < 3; i++) {
-            let disk_array: Array<number> = [];
+            let disk_array: Array<Disk> = [];
             this.towers.push(disk_array);
         }
-        for (var i = 0; i < this.n; i++) {
-            this.towers[0].push(this.n - i);
-
-            //i into string
-            var str = (this.n - i).toString();
-            //create a new div with id disk_i
-            var div = document.createElement("div");
-            div.id = "disk_" + str;
-
-            //random color for fillStyle
-            var r = Math.floor(Math.random() * 255);
-            var g = Math.floor(Math.random() * 255);
-            var b = Math.floor(Math.random() * 255);
-        }
+        this.towers[0] = disks;
         this.moves = 0;
         this.solved = false;
     }
@@ -45,7 +31,7 @@ class Hanoi {
 
     move(from: number, to: number) {
 
-        this.towers[to].push(this.towers[from].pop() as number);
+        this.towers[to].push(this.towers[from].pop() as Disk);
 
         this.moves++;
         won.innerHTML = "Moves : " + this.moves.toString();
@@ -54,8 +40,5 @@ class Hanoi {
             //display #won 
             won.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
-    }
-
-    draw() {
     }
 }
