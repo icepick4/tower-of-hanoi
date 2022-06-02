@@ -9,12 +9,15 @@ export const won: HTMLElement = document.getElementById("won") as HTMLElement;
 const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
 const winWidth = window.innerWidth;
 const winHeight = window.innerHeight;
-const geometryPic = new THREE.CylinderGeometry(0.45, 0.45, 10, 45);
+const FACES = 60;
+const geometryPic = new THREE.CylinderGeometry(0.45, 0.45, 10, FACES);
 const materialPic = new THREE.MeshPhongMaterial({ color: "gray" });
-const geometryBase = new THREE.CylinderGeometry(7, 7, 0.5, 45);
+const geometryBase = new THREE.CylinderGeometry(7, 7, 0.5, FACES);
 const materialBase = new THREE.MeshPhongMaterial({ color: "black" });
 const maxDiskHeight = 2;
-const diskGap = 0.125; 
+const diskGap = 0.125;
+export const PIC_GAP = 18; 
+
 
 var hanoi: Hanoi = new Hanoi();
 var selectedDisk : Disk | null;
@@ -44,20 +47,22 @@ BTN_PLAY.addEventListener("click", () => {
 
 init();
 render();
+
 function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, winWidth / winHeight, 0.1, 1000);
 
+    //opti that
     const base1 = new THREE.Mesh(geometryBase, materialBase);
     const base2 = new THREE.Mesh(geometryBase, materialBase);
     const base3 = new THREE.Mesh(geometryBase, materialBase);
-    base1.position.x = -18;
-    base3.position.x = 18
+    base1.position.x = -PIC_GAP;
+    base3.position.x = PIC_GAP;
 
-    const pic1 = new Pic(geometryPic, materialPic, 0);
-    const pic2 = new Pic(geometryPic, materialPic, 1);
-    const pic3 = new Pic(geometryPic, materialPic, 2);
-    pics.push(pic1, pic2, pic3);
+    for(let i = 0; i < 3; i++){
+        const pic = new Pic(geometryPic, materialPic, i);
+        pics.push(pic);
+    }
 
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.shadowMap.enabled = true;
@@ -65,6 +70,7 @@ function init() {
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
+    //restrict camera movement
     controls.minAzimuthAngle = Math.PI / 2;
     controls.maxAzimuthAngle = 3 * Math.PI / 2;
     controls.maxPolarAngle = Math.PI / 2 - 0.1;
@@ -78,7 +84,6 @@ function init() {
     //lights
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
     hemiLight.position.set(0, 20, 0);
-
     const dirLight = new THREE.PointLight(0xffffff, 0.8, 0, 2);
     dirLight.position.set(10, 20, - 50);
     dirLight.castShadow = true;
@@ -93,17 +98,16 @@ function init() {
     scene.add(base1);
     scene.add(base2);
     scene.add(base3);
-    scene.add(pic1.mesh);
-    scene.add(pic2.mesh);
-    scene.add(pic3.mesh);
     scene.add(floor);
-
-
+    for(let i = 0; i < 3; i++){
+        scene.add(pics[i].mesh);
+    }
 
     //camera settings
     camera.position.set(0, 15, -30);
     controls.update();
 
+    //add events listeners
     window.addEventListener('pointermove', onMouseMove);
     window.addEventListener('click', onMouseClick, false);
     window.addEventListener("resize", () => {
@@ -142,15 +146,10 @@ function raycasting(click: boolean) {
     if (intersects.length > 0) {
         var mesh = intersects[0].object as THREE.Mesh;
         for (let disk of disks) {
-            // console.log("le disk " + disk.index + "est hover : " + (disk.mesh == mesh));
-            // console.log("le disk " + disk.index + "est selected : " + (disk == selectedDisk));
             if (disk.mesh != mesh && disk != selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({ color: disk.color });
             }
             else {
-                // console.log("col : " + disk.col);
-                // console.log("len de la col : " + hanoi.towers[disk.col].length);
-                // console.log(disk.index);    
                 var diskAtTop = false;
                 diskAtTop = hanoi.towers[disk.col][hanoi.towers[disk.col].length - 1] == disk;
                 if (click && diskAtTop && movingCol == null && selectedDisk == null) {
@@ -207,15 +206,15 @@ function raycasting(click: boolean) {
 }
 
 function moveTop(disk : Disk){
-    if(disk.mesh.position.y < 18){
-        disk.mesh.position.y += 0.7;
+    if(disk.mesh.position.y < PIC_GAP){
+        disk.mesh.position.y += 0.9;
     }
     else{
         if(disk.mesh.position.x > 0){
-            disk.mesh.position.x -= 0.5;
+            disk.mesh.position.x -= 0.7;
         }
         else if(disk.mesh.position.x < 0){
-            disk.mesh.position.x += 0.5;
+            disk.mesh.position.x += 0.7;
         }
         else{
             movingTop = false;
@@ -230,9 +229,8 @@ function moveCol(disk : Disk, pic : Pic){
         lenCol++;
     }
     distanceY = lenCol * disk.height - (disk.height/2);
-    console.log(distanceY);
     if(pic.index == 0){
-        if(disk.mesh.position.x < 18){
+        if(disk.mesh.position.x < PIC_GAP){
             disk.mesh.position.x += 0.5;
         }
         else{
@@ -243,7 +241,6 @@ function moveCol(disk : Disk, pic : Pic){
                 disk.mesh.position.y = distanceY;
                 movingCol = null;
                 if(selectedDisk != null && canPlace){
-                    console.log("move disk " + selectedDisk.col + " to " + pic.index);
                     hanoi.move(selectedDisk.col, pic.index);
                     disk.col = pic.index;
                 }
@@ -259,7 +256,6 @@ function moveCol(disk : Disk, pic : Pic){
             disk.mesh.position.y = distanceY;
             movingCol = null;
             if(selectedDisk != null && canPlace){
-                console.log("move disk " + selectedDisk.col + " to " + pic.index);
                 hanoi.move(selectedDisk.col, pic.index);
                 disk.col = pic.index;
             }
@@ -268,7 +264,7 @@ function moveCol(disk : Disk, pic : Pic){
         }
     }
     else{
-        if(disk.mesh.position.x > -18){
+        if(disk.mesh.position.x > -PIC_GAP){
             disk.mesh.position.x -= 0.5;
         }
         else{
@@ -279,7 +275,6 @@ function moveCol(disk : Disk, pic : Pic){
                 disk.mesh.position.y = distanceY;
                 movingCol = null;
                 if(selectedDisk != null && canPlace){
-                    console.log("move disk " + selectedDisk.col + " to " + pic.index);
                     hanoi.move(selectedDisk.col, pic.index);
                     disk.col = pic.index;
                 }
@@ -295,8 +290,9 @@ function initDisks(n: number) {
         var g = Math.floor(Math.random() * 255);
         var b = Math.floor(Math.random() * 255);
         var rgb = "rgb(" + r + "," + g + "," + b + ")";
+        var radius = n - i + 0.5;
         var disk = new Disk(
-            new THREE.CylinderGeometry(n - i + 0.5, n - i + 0.5, maxDiskHeight - diskGap * n, 45),
+            new THREE.CylinderGeometry(radius, radius, maxDiskHeight - diskGap * n, FACES),
             new THREE.MeshPhongMaterial({
                 color: rgb
             }),

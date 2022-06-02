@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { PIC_GAP } from "../main";
 
 export class Disk {
     geometry: THREE.CylinderGeometry;
@@ -16,9 +17,9 @@ export class Disk {
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         if(index == 0){
-            this.mesh.position.set(18, (index+1) * height, 0);
+            this.mesh.position.set(PIC_GAP, (index+1) * height, 0);
         }
-        this.mesh.position.set(18, (index+1) * height - (height/2), 0);
+        this.mesh.position.set(PIC_GAP, (index+1) * height - (height/2), 0);
         this.mesh.name = "disk";
         this.color = color;
         this.col = 0;

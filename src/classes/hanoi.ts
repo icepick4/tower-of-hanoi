@@ -1,5 +1,6 @@
 import { Disk } from "./disk";
 import {won} from "../main";
+
 export class Hanoi {
     n: number;
     towers: Array<Array<Disk>>;
@@ -35,12 +36,8 @@ export class Hanoi {
         won.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
-            console.log("Solved");
             won.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
-        console.log("tour 1 : " + this.towers[0].length);
-        console.log("tour 2 : " + this.towers[1].length);
-        console.log("tour 3 : " + this.towers[2].length);
     }
 
     init(disks : Array<Disk>) {
