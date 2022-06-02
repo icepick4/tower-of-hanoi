@@ -10,8 +10,6 @@ const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
 const FACES = 60;
 const geometryPic = new THREE.CylinderGeometry(0.45, 0.45, 10, FACES);
 const materialPic = new THREE.MeshPhongMaterial({ color: "gray" });
-const geometryBase = new THREE.CylinderGeometry(7, 7, 0.5, FACES);
-const materialBase = new THREE.MeshPhongMaterial({ color: "black" });
 const maxDiskHeight = 2;
 const diskGap = 0.125;
 export const PIC_GAP = 18;
@@ -37,14 +35,12 @@ let pics = new Array<Pic>();
 BTN_PLAY.addEventListener("click", () => {
     //reset the game
     hanoi.reset();
-    for (var i = 0; i < disks.length; i++) {
-        scene.remove(disks[i].mesh);
-    }
-    disks = new Array<Disk>();
-    won.innerHTML = "Moves : 0";
+    resetGamePlay();
     if (input != null) {
         var n: number = Number(input.value);
-        initDisks(n);
+        if (n > 0 && n <= 7) {
+            initDisks(n);
+        }
     }
 });
 
@@ -60,12 +56,13 @@ function init() {
         1000
     );
 
-    //opti that
-    const base1 = new THREE.Mesh(geometryBase, materialBase);
-    const base2 = new THREE.Mesh(geometryBase, materialBase);
-    const base3 = new THREE.Mesh(geometryBase, materialBase);
-    base1.position.x = -PIC_GAP;
-    base3.position.x = PIC_GAP;
+    //init a rectangle
+    var base = new THREE.Mesh(
+        new THREE.BoxGeometry(55, 0.5, 17.5),
+        new THREE.MeshBasicMaterial({ color: "black" })
+    );
+    base.position.set(0, -0.5, 0);
+    base.castShadow = true;
 
     for (let i = 0; i < 3; i++) {
         const pic = new Pic(geometryPic, materialPic, i);
@@ -82,6 +79,9 @@ function init() {
     controls.minAzimuthAngle = Math.PI / 2;
     controls.maxAzimuthAngle = (3 * Math.PI) / 2;
     controls.maxPolarAngle = Math.PI / 2 - 0.1;
+    //restrict camera zoom
+    controls.minDistance = 20;
+    controls.maxDistance = 75;
 
     //floor
     const floor = new THREE.Mesh(
@@ -95,8 +95,8 @@ function init() {
     //lights
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
     hemiLight.position.set(0, 20, 0);
-    const dirLight = new THREE.PointLight(0xffffff, 0.8, 0, 2);
-    dirLight.position.set(10, 20, -50);
+    const dirLight = new THREE.PointLight(0xffffff, 2, 400);
+    dirLight.position.set(10, 30, -100);
     dirLight.castShadow = true;
 
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -105,9 +105,7 @@ function init() {
     //adding elements to the scene
     scene.add(dirLight);
     scene.add(hemiLight);
-    scene.add(base1);
-    scene.add(base2);
-    scene.add(base3);
+    scene.add(base);
     scene.add(floor);
     for (let i = 0; i < 3; i++) {
         scene.add(pics[i].mesh);
@@ -190,13 +188,23 @@ function raycasting(click: boolean) {
                         color: "rgb(65,65,65)",
                     });
                 }
+                if (disk == selectedDisk) {
+                    disk.mesh.material = new THREE.MeshPhongMaterial({
+                        color: disk.color,
+                    });
+                }
             }
         }
         for (let pic of pics) {
             if (pic.mesh != mesh) {
                 pic.mesh.material = materialPic;
             } else {
-                if (click && selectedDisk != null && movingCol == null) {
+                if (
+                    click &&
+                    selectedDisk != null &&
+                    movingCol == null &&
+                    !movingTop
+                ) {
                     if (hanoi.canMove(selectedDisk.col, pic.index)) {
                         canPlace = true;
                         movingCol = pic;
@@ -234,7 +242,7 @@ function raycasting(click: boolean) {
 }
 
 function moveTop(disk: Disk) {
-    if (disk.mesh.position.y < PIC_GAP - 5) {
+    if (disk.mesh.position.y < PIC_GAP) {
         disk.mesh.position.y += xSpeed;
     } else {
         if (disk.mesh.position.x > 0 && disk.mesh.position.x - xSpeed > 0) {
@@ -347,7 +355,18 @@ function initDisks(n: number) {
         disks.push(disk);
         scene.add(disk.mesh);
     }
-    if (n > 0 && n <= 7) {
-        hanoi.init(disks);
+    hanoi.init(disks);
+}
+
+function resetGamePlay() {
+    for (let disk of disks) {
+        scene.remove(disk.mesh);
     }
+    disks = [];
+    hanoi.reset();
+    selectedDisk = null;
+    movingCol = null;
+    movingTop = false;
+    canPlace = false;
+    won.innerHTML = "Moves : 0";
 }
