@@ -1,34 +1,22 @@
-//import three as a module
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Hanoi } from "./classes/hanoi";
 import { Pic } from "./classes/pic";
 import { Disk } from "./classes/disk";
-import { AsyncDependenciesBlock } from 'webpack';
 
-// const input = document.querySelector("input");
-// const won: HTMLElement = document.getElementById("won") as HTMLElement;
-// const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
+const input = document.querySelector("input");
+export const won: HTMLElement = document.getElementById("won") as HTMLElement;
+const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
 const winWidth = window.innerWidth;
 const winHeight = window.innerHeight;
 const geometryPic = new THREE.CylinderGeometry(0.45, 0.45, 10, 45);
 const materialPic = new THREE.MeshPhongMaterial({ color: "gray" });
 const geometryBase = new THREE.CylinderGeometry(7, 7, 0.5, 45);
 const materialBase = new THREE.MeshPhongMaterial({ color: "black" });
+const maxDiskHeight = 2;
+const diskGap = 0.125; 
 
-// BTN_PLAY.addEventListener("click", () => {
-//     won.innerHTML = "Moves : 0";
-//     if (input != null) {
-//         var n: number = Number(input.value);
-//         initDisks(n);
-//         if (n > 0 && n <= 7) {
-//             hanoi = new Hanoi(n);
-//             hanoi.draw();
-//         }
-//     }
-// });
-
-var hanoi: Hanoi;
+var hanoi: Hanoi = new Hanoi();
 var selectedDisk : Disk | null;
 var movingTop : boolean = false;
 var movingCol : Pic | null = null;
@@ -40,18 +28,31 @@ raycaster = new THREE.Raycaster();
 let disks = new Array<Disk>();
 let pics = new Array<Pic>();
 
+BTN_PLAY.addEventListener("click", () => {
+    //reset the game
+    hanoi.reset();
+    for(var i = 0; i < disks.length; i++){
+        scene.remove(disks[i].mesh);
+    }
+    disks = new Array<Disk>();            
+    won.innerHTML = "Moves : 0";
+    if (input != null) {
+        var n: number = Number(input.value);
+        initDisks(n);
+    }
+});
+
 init();
 render();
 function init() {
     scene = new THREE.Scene();
-    let disks: Array<THREE.Mesh> = [];
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, winWidth / winHeight, 0.1, 1000);
 
     const base1 = new THREE.Mesh(geometryBase, materialBase);
     const base2 = new THREE.Mesh(geometryBase, materialBase);
     const base3 = new THREE.Mesh(geometryBase, materialBase);
-    base1.position.x = -15;
-    base3.position.x = 15
+    base1.position.x = -18;
+    base3.position.x = 18
 
     const pic1 = new Pic(geometryPic, materialPic, 0);
     const pic2 = new Pic(geometryPic, materialPic, 1);
@@ -82,7 +83,7 @@ function init() {
     dirLight.position.set(10, 20, - 50);
     dirLight.castShadow = true;
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(winWidth, winHeight);
     renderer.setClearColor(0x000000, 0);
 
 
@@ -100,19 +101,18 @@ function init() {
 
 
     //camera settings
-    camera.position.set(0, 20, -50);
+    camera.position.set(0, 15, -30);
     controls.update();
 
     window.addEventListener('pointermove', onMouseMove);
     window.addEventListener('click', onMouseClick, false);
     window.addEventListener("resize", () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = winWidth / winHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(winWidth, winHeight);
     }, false);
     document.body.appendChild(renderer.domElement);
 }
-
 
 function render() {
     window.requestAnimationFrame(render);
@@ -128,8 +128,8 @@ function render() {
 
 function onMouseMove(event: MouseEvent) {
     event.preventDefault();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    mouse.x = (event.clientX / winWidth) * 2 - 1;
+    mouse.y = -(event.clientY / winHeight) * 2 + 1;
 }
 
 function onMouseClick(event: MouseEvent) {
@@ -203,13 +203,11 @@ function raycasting(click: boolean) {
         for (let pic of pics) {
             pic.mesh.material = materialPic;
         }
-
     }
-    
 }
 
 function moveTop(disk : Disk){
-    if(disk.mesh.position.y < 15){
+    if(disk.mesh.position.y < 18){
         disk.mesh.position.y += 0.7;
     }
     else{
@@ -231,22 +229,18 @@ function moveCol(disk : Disk, pic : Pic){
     if(canPlace){
         lenCol++;
     }
-    if(lenCol == 1){
-        distanceY = lenCol * 1.5;
-    }
-    else{
-        distanceY = lenCol * 1.5;
-    }
+    distanceY = lenCol * disk.height - (disk.height/2);
     console.log(distanceY);
     if(pic.index == 0){
-        if(disk.mesh.position.x < 15){
+        if(disk.mesh.position.x < 18){
             disk.mesh.position.x += 0.5;
         }
         else{
-            if(disk.mesh.position.y > distanceY){
+            if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.7 > distanceY){
                 disk.mesh.position.y -= 0.7;
             }
             else{
+                disk.mesh.position.y = distanceY;
                 movingCol = null;
                 if(selectedDisk != null && canPlace){
                     console.log("move disk " + selectedDisk.col + " to " + pic.index);
@@ -258,10 +252,11 @@ function moveCol(disk : Disk, pic : Pic){
         }
     }
     else if(pic.index == 1){
-        if(disk.mesh.position.y > distanceY){
+        if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.7 > distanceY){
             disk.mesh.position.y -= 0.7;
         }
         else{
+            disk.mesh.position.y = distanceY;
             movingCol = null;
             if(selectedDisk != null && canPlace){
                 console.log("move disk " + selectedDisk.col + " to " + pic.index);
@@ -273,14 +268,15 @@ function moveCol(disk : Disk, pic : Pic){
         }
     }
     else{
-        if(disk.mesh.position.x > -15){
+        if(disk.mesh.position.x > -18){
             disk.mesh.position.x -= 0.5;
         }
         else{
-            if(disk.mesh.position.y > distanceY){
+            if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.7 > distanceY){
                 disk.mesh.position.y -= 0.7;
             }
             else{
+                disk.mesh.position.y = distanceY;
                 movingCol = null;
                 if(selectedDisk != null && canPlace){
                     console.log("move disk " + selectedDisk.col + " to " + pic.index);
@@ -293,7 +289,6 @@ function moveCol(disk : Disk, pic : Pic){
     }
 }
 
-
 function initDisks(n: number) {
     for (let i = 0; i < n; i++) {
         var r = Math.floor(Math.random() * 255);
@@ -301,17 +296,18 @@ function initDisks(n: number) {
         var b = Math.floor(Math.random() * 255);
         var rgb = "rgb(" + r + "," + g + "," + b + ")";
         var disk = new Disk(
-            new THREE.CylinderGeometry(n - i + 0.5, n - i + 0.5, 1.5, 45),
+            new THREE.CylinderGeometry(n - i + 0.5, n - i + 0.5, maxDiskHeight - diskGap * n, 45),
             new THREE.MeshPhongMaterial({
                 color: rgb
             }),
             rgb,
-            i
+            i,
+            maxDiskHeight - diskGap * n
         );
         disks.push(disk);
         scene.add(disk.mesh);
     }
-    hanoi = new Hanoi(n, disks);
+    if (n > 0 && n <= 7) {
+        hanoi.init(disks);
+    }
 }
-
-initDisks(3);

@@ -1,22 +1,19 @@
-// const won: HTMLElement = document.getElementById("won") as HTMLElement;
 import { Disk } from "./disk";
+import {won} from "../main";
 export class Hanoi {
     n: number;
     towers: Array<Array<Disk>>;
     moves: number;
     solved: boolean;
-    constructor(n: number, disks: Array<Disk>) {
-        this.n = n;
+    constructor() {
         this.towers = [];
         for (var i = 0; i < 3; i++) {
             let disk_array: Array<Disk> = [];
             this.towers.push(disk_array);
         }
-        for(var i = 0; i < disks.length; i++) {
-            this.towers[0].push(disks[i]);
-        }
         this.moves = 0;
         this.solved = false;
+        this.n = 0;
     }
 
     canMove(from: number, to: number) {
@@ -35,15 +32,32 @@ export class Hanoi {
         var disk = this.towers[from].pop() as Disk;
         this.towers[to].push(disk);
         this.moves++;
-        // won.innerHTML = "Moves : " + this.moves.toString();
+        won.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
             console.log("Solved");
-            //display #won 
-            // won.innerHTML = "You won in " + this.moves.toString() + " moves!";
+            won.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
         console.log("tour 1 : " + this.towers[0].length);
         console.log("tour 2 : " + this.towers[1].length);
         console.log("tour 3 : " + this.towers[2].length);
+    }
+
+    init(disks : Array<Disk>) {
+        this.n = disks.length;
+        for(var i = 0; i < disks.length; i++) {
+            this.towers[0].push(disks[i]);
+        }
+    }
+
+    reset(){
+        this.towers = [];
+        for (var i = 0; i < 3; i++) {
+            let disk_array: Array<Disk> = [];
+            this.towers.push(disk_array);
+        }
+        this.moves = 0;
+        this.solved = false;
+        this.n = 0;
     }
 }

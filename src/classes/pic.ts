@@ -13,13 +13,13 @@ export class Pic {
         this.mesh.name = "pic";
         this.index = index;
         if (index == 0) {
-            this.mesh.position.set(15, 5, 0);
+            this.mesh.position.set(18, 5, 0);
         }
         else if (index == 1) {
             this.mesh.position.set(0, 5, 0);
         }
         else if (index == 2) {
-            this.mesh.position.set(-15, 5, 0);
+            this.mesh.position.set(-18, 5, 0);
         }
     }
 }

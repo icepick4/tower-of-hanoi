@@ -8,17 +8,22 @@ export class Disk {
     col: number;
     index: number;
     selected: boolean;
-    constructor(geometry: THREE.CylinderGeometry, material: THREE.MeshPhongMaterial, color: string, index: number) {
+    height : number
+    constructor(geometry: THREE.CylinderGeometry, material: THREE.MeshPhongMaterial, color: string, index: number, height : number) {
         this.geometry = geometry;
         this.material = material;
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
-        this.mesh.position.set(15, (index+1) * 1.5 - (1.5/2), 0);
+        if(index == 0){
+            this.mesh.position.set(18, (index+1) * height, 0);
+        }
+        this.mesh.position.set(18, (index+1) * height - (height/2), 0);
         this.mesh.name = "disk";
         this.color = color;
         this.col = 0;
         this.index = index;
         this.selected = false;
+        this.height = height;
     }
 }
