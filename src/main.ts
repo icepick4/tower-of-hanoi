@@ -189,7 +189,9 @@ function raycasting(click: boolean) {
                         }
                     }
                 }
-                pic.mesh.material = new THREE.MeshPhongMaterial({ color: "rgb(160,160,160)" });
+                if(selectedDisk != null){
+                    pic.mesh.material = new THREE.MeshPhongMaterial({ color: "rgb(160,160,160)" });
+                }
             }
         }
     }
