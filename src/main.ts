@@ -210,13 +210,11 @@ function moveTop(disk : Disk){
         disk.mesh.position.y += 0.9;
     }
     else{
-        if(disk.mesh.position.x > 0){
+        if(disk.mesh.position.x > 0 && disk.mesh.position.x - 0.7 > 0){
             disk.mesh.position.x -= 0.7;
         }
-        else if(disk.mesh.position.x < 0){
-            disk.mesh.position.x += 0.7;
-        }
         else{
+            disk.mesh.position.x = 0;
             movingTop = false;
         }
     }
@@ -231,11 +229,11 @@ function moveCol(disk : Disk, pic : Pic){
     distanceY = lenCol * disk.height - (disk.height/2);
     if(pic.index == 0){
         if(disk.mesh.position.x < PIC_GAP){
-            disk.mesh.position.x += 0.5;
+            disk.mesh.position.x += 0.9;
         }
         else{
-            if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.7 > distanceY){
-                disk.mesh.position.y -= 0.7;
+            if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.9 > distanceY){
+                disk.mesh.position.y -= 0.9;
             }
             else{
                 disk.mesh.position.y = distanceY;
@@ -249,8 +247,8 @@ function moveCol(disk : Disk, pic : Pic){
         }
     }
     else if(pic.index == 1){
-        if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.7 > distanceY){
-            disk.mesh.position.y -= 0.7;
+        if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.9 > distanceY){
+            disk.mesh.position.y -= 0.9;
         }
         else{
             disk.mesh.position.y = distanceY;
@@ -265,11 +263,11 @@ function moveCol(disk : Disk, pic : Pic){
     }
     else{
         if(disk.mesh.position.x > -PIC_GAP){
-            disk.mesh.position.x -= 0.5;
+            disk.mesh.position.x -= 0.9;
         }
         else{
-            if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.7 > distanceY){
-                disk.mesh.position.y -= 0.7;
+            if(disk.mesh.position.y > distanceY && disk.mesh.position.y - 0.9 > distanceY){
+                disk.mesh.position.y -= 0.9;
             }
             else{
                 disk.mesh.position.y = distanceY;
