@@ -20,12 +20,13 @@ export class Hanoi {
     canMove(from: number, to: number) {
         if (this.towers[from].length == 0) {
             return false;
-        }
-        else if (this.towers[to].length == 0) {
+        } else if (this.towers[to].length == 0) {
             return true;
-        }
-        else {
-            return this.towers[from][this.towers[from].length - 1].index > this.towers[to][this.towers[to].length - 1].index;
+        } else {
+            return (
+                this.towers[from][this.towers[from].length - 1].index >
+                this.towers[to][this.towers[to].length - 1].index
+            );
         }
     }
 
