@@ -1,24 +1,14 @@
-const input = document.querySelector("input");
-const won: HTMLElement = document.getElementById("won") as HTMLElement;
-const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
-
-const PIC1: HTMLElement = document.getElementById("pic1") as HTMLElement;
-const PIC2: HTMLElement = document.getElementById("pic2") as HTMLElement;
-const PIC3: HTMLElement = document.getElementById("pic3") as HTMLElement;
-
-const PIC1AREA: HTMLElement = document.getElementById(
-    "pic1Area"
-) as HTMLElement;
-const PIC2AREA: HTMLElement = document.getElementById(
-    "pic2Area"
-) as HTMLElement;
-const PIC3AREA: HTMLElement = document.getElementById(
-    "pic3Area"
-) as HTMLElement;
-
-PIC1AREA.style.width = document.body.clientWidth / 50 + "px";
-PIC2AREA.style.width = document.body.clientWidth / 50 + "px";
-PIC3AREA.style.width = document.body.clientWidth / 50 + "px";
+import {
+    BTN_PLAY,
+    PIC1,
+    PIC2,
+    PIC3,
+    PIC1_AREA,
+    PIC2_AREA,
+    PIC3_AREA,
+    INPUT,
+    WON,
+} from "./constants";
 
 var startDragCol: number;
 var startDragDisk: number;
@@ -31,9 +21,9 @@ window.addEventListener("resize", function (e) {
     if (hanoi != null) {
         hanoi.draw();
     }
-    PIC1AREA.style.width = document.body.clientWidth / 50 + "px";
-    PIC2AREA.style.width = document.body.clientWidth / 50 + "px";
-    PIC3AREA.style.width = document.body.clientWidth / 50 + "px";
+    PIC1_AREA.style.width = document.body.clientWidth / 50 + "px";
+    PIC2_AREA.style.width = document.body.clientWidth / 50 + "px";
+    PIC3_AREA.style.width = document.body.clientWidth / 50 + "px";
 });
 
 //event on opening devtools
@@ -48,12 +38,12 @@ function setEvents() {
         PIC1.children[i].addEventListener("dragstart", handleDragStart);
         PIC1.children[i].addEventListener("dragend", handleDragEnd);
     }
-    PIC1AREA.addEventListener("dragover", allowDrop);
-    PIC2AREA.addEventListener("dragover", allowDrop);
-    PIC3AREA.addEventListener("dragover", allowDrop);
-    PIC1AREA.addEventListener("drop", drop);
-    PIC2AREA.addEventListener("drop", drop);
-    PIC3AREA.addEventListener("drop", drop);
+    PIC1_AREA.addEventListener("dragover", allowDrop);
+    PIC2_AREA.addEventListener("dragover", allowDrop);
+    PIC3_AREA.addEventListener("dragover", allowDrop);
+    PIC1_AREA.addEventListener("drop", drop);
+    PIC2_AREA.addEventListener("drop", drop);
+    PIC3_AREA.addEventListener("drop", drop);
 }
 
 function allowDrop(ev: DragEvent) {
@@ -90,40 +80,19 @@ function handleDragEnd(this: HTMLElement) {
     this.style.border = "1px solid #000";
 }
 
-function handleDrag(this: HTMLElement) {
-    //if hover a pic
-}
-
 function move(col: number) {
-    console.log({ col });
     var diskAtTop =
         hanoi.towers[col - 1][hanoi.towers[col - 1].length - 1] ==
         startDragDisk;
-    console.log({ startDragDisk });
-    console.log(hanoi.towers[col][hanoi.towers[col].length - 1]);
-    console.log({ startDragCol });
-    console.log(JSON.stringify(hanoi.towers));
     if (hanoi.can_move(startDragCol, col) && diskAtTop) {
         hanoi.move(startDragCol, col);
         hanoi.draw();
     }
 }
 
-function removePic1() {
-    var disk: HTMLElement = PIC1.lastChild as HTMLElement;
-    PIC1.removeChild(disk);
-    return disk;
-}
-
-function removePic2() {
-    var disk: HTMLElement = PIC2.lastChild as HTMLElement;
-    PIC2.removeChild(disk);
-    return disk;
-}
-
-function removePic3() {
-    var disk: HTMLElement = PIC3.lastChild as HTMLElement;
-    PIC3.removeChild(disk);
+function removeDiskFromPic(pic: HTMLElement) {
+    var disk: HTMLElement = pic.lastChild as HTMLElement;
+    pic.removeChild(disk);
     return disk;
 }
 
@@ -132,9 +101,9 @@ function play() {
     PIC1.innerHTML = "";
     PIC2.innerHTML = "";
     PIC3.innerHTML = "";
-    won.innerHTML = "Moves : 0";
-    if (input != null) {
-        var n: number = Number(input.value);
+    WON.innerHTML = "Moves : 0";
+    if (INPUT != null) {
+        var n: number = Number(INPUT.value);
         if (n > 0 && n <= 7) {
             hanoi = new Hanoi(n);
             hanoi.draw();
@@ -205,11 +174,11 @@ class Hanoi {
         //remove the last child in the pic number from
         var lastChild: HTMLElement;
         if (from == 0) {
-            lastChild = removePic1();
+            lastChild = removeDiskFromPic(PIC1);
         } else if (from == 1) {
-            lastChild = removePic2();
+            lastChild = removeDiskFromPic(PIC2);
         } else {
-            lastChild = removePic3();
+            lastChild = removeDiskFromPic(PIC3);
         }
         if (to == 0) {
             PIC1.appendChild(lastChild);
@@ -222,11 +191,11 @@ class Hanoi {
         this.towers[to].push(this.towers[from].pop() as number);
 
         this.moves++;
-        won.innerHTML = "Moves : " + this.moves.toString();
+        WON.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
             //display #won
-            won.innerHTML = "You won in " + this.moves.toString() + " moves!";
+            WON.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
     }
 
@@ -246,7 +215,7 @@ class Hanoi {
             div.style.left =
                 document.body.clientWidth / 6 -
                 div.offsetWidth / 2 +
-                PIC1AREA.offsetWidth / 2 +
+                PIC1_AREA.offsetWidth / 2 +
                 "px";
         }
         for (var i = 0; i < this.towers[1].length; i++) {
@@ -263,7 +232,7 @@ class Hanoi {
             div.style.left =
                 document.body.clientWidth / 2 -
                 div.offsetWidth / 2 +
-                PIC1AREA.offsetWidth / 2 +
+                PIC1_AREA.offsetWidth / 2 +
                 "px";
         }
         for (var i = 0; i < this.towers[2].length; i++) {
@@ -280,7 +249,7 @@ class Hanoi {
             div.style.left =
                 document.body.clientWidth / 1.25 -
                 div.offsetWidth / 2 +
-                PIC1AREA.offsetWidth / 2 +
+                PIC1_AREA.offsetWidth / 2 +
                 "px";
         }
     }
