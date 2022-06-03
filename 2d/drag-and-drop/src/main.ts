@@ -6,15 +6,22 @@ const PIC1: HTMLElement = document.getElementById("pic1") as HTMLElement;
 const PIC2: HTMLElement = document.getElementById("pic2") as HTMLElement;
 const PIC3: HTMLElement = document.getElementById("pic3") as HTMLElement;
 
-const PIC1AREA: HTMLElement = document.getElementById("pic1Area") as HTMLElement;
-const PIC2AREA: HTMLElement = document.getElementById("pic2Area") as HTMLElement;
-const PIC3AREA: HTMLElement = document.getElementById("pic3Area") as HTMLElement;
+const PIC1AREA: HTMLElement = document.getElementById(
+    "pic1Area"
+) as HTMLElement;
+const PIC2AREA: HTMLElement = document.getElementById(
+    "pic2Area"
+) as HTMLElement;
+const PIC3AREA: HTMLElement = document.getElementById(
+    "pic3Area"
+) as HTMLElement;
 
-PIC1AREA.style.width = (document.body.clientWidth / 50) + "px";
-PIC2AREA.style.width = (document.body.clientWidth / 50) + "px";
-PIC3AREA.style.width = (document.body.clientWidth / 50) + "px";
+PIC1AREA.style.width = document.body.clientWidth / 50 + "px";
+PIC2AREA.style.width = document.body.clientWidth / 50 + "px";
+PIC3AREA.style.width = document.body.clientWidth / 50 + "px";
 
-var startDrag: number;
+var startDragCol: number;
+var startDragDisk: number;
 var hanoi: Hanoi;
 
 BTN_PLAY.addEventListener("click", play);
@@ -24,9 +31,9 @@ window.addEventListener("resize", function (e) {
     if (hanoi != null) {
         hanoi.draw();
     }
-    PIC1AREA.style.width = (document.body.clientWidth / 50) + "px";
-    PIC2AREA.style.width = (document.body.clientWidth / 50) + "px";
-    PIC3AREA.style.width = (document.body.clientWidth / 50) + "px";
+    PIC1AREA.style.width = document.body.clientWidth / 50 + "px";
+    PIC2AREA.style.width = document.body.clientWidth / 50 + "px";
+    PIC3AREA.style.width = document.body.clientWidth / 50 + "px";
 });
 
 //event on opening devtools
@@ -35,7 +42,6 @@ window.addEventListener("click", function (e) {
         hanoi.draw();
     }
 });
-
 
 function setEvents() {
     for (var i = 0; i < PIC1.children.length; i++) {
@@ -65,13 +71,14 @@ function drop(ev: DragEvent) {
 }
 
 function handleDragStart(this: HTMLElement) {
-    this.style.opacity = '0.75';
-    this.style.border = '1px dashed #000';
+    this.style.opacity = "0.75";
+    this.style.border = "1px dashed #000";
     var disk: number = Number(this.id.substring(5, 6));
     for (var i = 0; i < 3; i++) {
         for (var j = 0; j < hanoi.towers[i].length; j++) {
             if (hanoi.towers[i][j] == disk) {
-                startDrag = i;
+                startDragCol = i;
+                startDragDisk = disk;
                 break;
             }
         }
@@ -79,7 +86,7 @@ function handleDragStart(this: HTMLElement) {
 }
 
 function handleDragEnd(this: HTMLElement) {
-    this.style.opacity = '1';
+    this.style.opacity = "1";
     this.style.border = "1px solid #000";
 }
 
@@ -88,8 +95,16 @@ function handleDrag(this: HTMLElement) {
 }
 
 function move(col: number) {
-    if (hanoi.can_move(startDrag, col)) {
-        hanoi.move(startDrag, col);
+    console.log({ col });
+    var diskAtTop =
+        hanoi.towers[col - 1][hanoi.towers[col - 1].length - 1] ==
+        startDragDisk;
+    console.log({ startDragDisk });
+    console.log(hanoi.towers[col][hanoi.towers[col].length - 1]);
+    console.log({ startDragCol });
+    console.log(JSON.stringify(hanoi.towers));
+    if (hanoi.can_move(startDragCol, col) && diskAtTop) {
+        hanoi.move(startDragCol, col);
         hanoi.draw();
     }
 }
@@ -111,7 +126,6 @@ function removePic3() {
     PIC3.removeChild(disk);
     return disk;
 }
-
 
 function play() {
     //clear divs
@@ -157,13 +171,14 @@ class Hanoi {
             div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
             div.style.border = "1px solid black";
 
-            div.style.width = (document.body.clientWidth) * (this.n - 1) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
+            div.style.width =
+                (document.body.clientWidth * (this.n - 1)) / 25 + 10 + "px";
+            div.style.height = document.body.clientWidth / 33.333 + "px";
             div.style.position = "absolute";
             div.draggable = true;
             div.style.cursor = "move";
 
-            div.style.bottom = (i) * 45 + 30 - 10 + "px";
+            div.style.bottom = i * 45 + 30 - 10 + "px";
             div.style.left = screen.width / 6 - (this.n - i) * 30 + 2.5 + "px";
             div.style.zIndex = "1";
 
@@ -176,12 +191,13 @@ class Hanoi {
     can_move(from: number, to: number) {
         if (this.towers[from].length == 0) {
             return false;
-        }
-        else if (this.towers[to].length == 0) {
+        } else if (this.towers[to].length == 0) {
             return true;
-        }
-        else {
-            return this.towers[from][this.towers[from].length - 1] < this.towers[to][this.towers[to].length - 1];
+        } else {
+            return (
+                this.towers[from][this.towers[from].length - 1] <
+                this.towers[to][this.towers[to].length - 1]
+            );
         }
     }
 
@@ -190,20 +206,16 @@ class Hanoi {
         var lastChild: HTMLElement;
         if (from == 0) {
             lastChild = removePic1();
-        }
-        else if (from == 1) {
+        } else if (from == 1) {
             lastChild = removePic2();
-        }
-        else {
+        } else {
             lastChild = removePic3();
         }
         if (to == 0) {
             PIC1.appendChild(lastChild);
-        }
-        else if (to == 1) {
+        } else if (to == 1) {
             PIC2.appendChild(lastChild);
-        }
-        else {
+        } else {
             PIC3.appendChild(lastChild);
         }
 
@@ -213,7 +225,7 @@ class Hanoi {
         won.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
-            //display #won 
+            //display #won
             won.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
     }
@@ -221,26 +233,55 @@ class Hanoi {
     draw() {
         //draw the disks on the lines
         for (var i = 0; i < this.towers[0].length; i++) {
-            var div: HTMLElement = document.getElementById("disk_" + (this.towers[0][i]).toString()) as HTMLElement;
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[0][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 6 - div.offsetWidth / 2 + PIC1AREA.offsetWidth / 2 + "px";
+            var div: HTMLElement = document.getElementById(
+                "disk_" + this.towers[0][i].toString()
+            ) as HTMLElement;
+            div.style.bottom =
+                (i * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+            div.style.width =
+                (document.body.clientWidth * this.towers[0][i]) / 25 +
+                10 +
+                "px";
+            div.style.height = document.body.clientWidth / 33.333 + "px";
+            div.style.left =
+                document.body.clientWidth / 6 -
+                div.offsetWidth / 2 +
+                PIC1AREA.offsetWidth / 2 +
+                "px";
         }
         for (var i = 0; i < this.towers[1].length; i++) {
-            var div: HTMLElement = document.getElementById("disk_" + (this.towers[1][i]).toString()) as HTMLElement;
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[1][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + PIC1AREA.offsetWidth / 2 + "px";
+            var div: HTMLElement = document.getElementById(
+                "disk_" + this.towers[1][i].toString()
+            ) as HTMLElement;
+            div.style.bottom =
+                (i * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+            div.style.width =
+                (document.body.clientWidth * this.towers[1][i]) / 25 +
+                10 +
+                "px";
+            div.style.height = document.body.clientWidth / 33.333 + "px";
+            div.style.left =
+                document.body.clientWidth / 2 -
+                div.offsetWidth / 2 +
+                PIC1AREA.offsetWidth / 2 +
+                "px";
         }
         for (var i = 0; i < this.towers[2].length; i++) {
-            var div: HTMLElement = document.getElementById("disk_" + (this.towers[2][i]).toString()) as HTMLElement;
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[2][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + PIC1AREA.offsetWidth / 2 + "px";
+            var div: HTMLElement = document.getElementById(
+                "disk_" + this.towers[2][i].toString()
+            ) as HTMLElement;
+            div.style.bottom =
+                (i * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+            div.style.width =
+                (document.body.clientWidth * this.towers[2][i]) / 25 +
+                10 +
+                "px";
+            div.style.height = document.body.clientWidth / 33.333 + "px";
+            div.style.left =
+                document.body.clientWidth / 1.25 -
+                div.offsetWidth / 2 +
+                PIC1AREA.offsetWidth / 2 +
+                "px";
         }
     }
 }
-
