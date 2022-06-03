@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { PIC_GAP } from "../main";
+import { PIC_GAP } from "../constants";
 
 export class Pic {
     geometry: THREE.CylinderGeometry;
     material: THREE.MeshPhongMaterial;
     mesh: THREE.Mesh;
-    index : number;
+    index: number;
     constructor(geometry: THREE.CylinderGeometry, material: THREE.MeshPhongMaterial, index: number) {
         this.geometry = geometry;
         this.material = material;

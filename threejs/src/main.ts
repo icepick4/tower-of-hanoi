@@ -1,18 +1,17 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Hanoi } from "./classes/hanoi";
+import { Hanoi } from "./classes/hanoi"
 import { Pic } from "./classes/pic";
 import { Disk } from "./classes/disk";
+import { MAX_DISK_HEIGHT, PIC_GAP } from "./constants";
+import { BTN_PLAY } from "./constants";
+import { DISK_GAP } from "./constants";
+import { INPUT } from "./constants";
+import { WON } from "./constants";
+import { FACES } from "./constants";
+import { GEOMETRY_PIC } from "./constants";
+import { MATERIAL_PIC } from "./constants";
 
-const input = document.querySelector("input");
-export const won: HTMLElement = document.getElementById("won") as HTMLElement;
-const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
-const FACES = 60;
-const geometryPic = new THREE.CylinderGeometry(0.45, 0.45, 10, FACES);
-const materialPic = new THREE.MeshPhongMaterial({ color: "gray" });
-const maxDiskHeight = 2;
-const diskGap = 0.125;
-export const PIC_GAP = 18;
 
 var hanoi: Hanoi = new Hanoi();
 var selectedDisk: Disk | null;
@@ -36,8 +35,8 @@ BTN_PLAY.addEventListener("click", () => {
     //reset the game
     hanoi.reset();
     resetGamePlay();
-    if (input != null) {
-        var n: number = Number(input.value);
+    if (INPUT != null) {
+        var n: number = Number(INPUT.value);
         if (n > 0 && n <= 7) {
             initDisks(n);
         }
@@ -65,7 +64,7 @@ function init() {
     base.castShadow = true;
 
     for (let i = 0; i < 3; i++) {
-        const pic = new Pic(geometryPic, materialPic, i);
+        const pic = new Pic(GEOMETRY_PIC, MATERIAL_PIC, i);
         pics.push(pic);
     }
 
@@ -197,7 +196,7 @@ function raycasting(click: boolean) {
         }
         for (let pic of pics) {
             if (pic.mesh != mesh) {
-                pic.mesh.material = materialPic;
+                pic.mesh.material = MATERIAL_PIC;
             } else {
                 if (
                     click &&
@@ -236,7 +235,7 @@ function raycasting(click: boolean) {
             }
         }
         for (let pic of pics) {
-            pic.mesh.material = materialPic;
+            pic.mesh.material = MATERIAL_PIC;
         }
     }
 }
@@ -342,7 +341,7 @@ function initDisks(n: number) {
             new THREE.CylinderGeometry(
                 radius,
                 radius,
-                maxDiskHeight - diskGap * n,
+                MAX_DISK_HEIGHT - DISK_GAP * n,
                 FACES
             ),
             new THREE.MeshPhongMaterial({
@@ -350,7 +349,7 @@ function initDisks(n: number) {
             }),
             rgb,
             i,
-            maxDiskHeight - diskGap * n
+            MAX_DISK_HEIGHT - DISK_GAP * n
         );
         disks.push(disk);
         scene.add(disk.mesh);
@@ -368,5 +367,5 @@ function resetGamePlay() {
     movingCol = null;
     movingTop = false;
     canPlace = false;
-    won.innerHTML = "Moves : 0";
+    WON.innerHTML = "Moves : 0";
 }

@@ -1,5 +1,5 @@
 import { Disk } from "./disk";
-import {won} from "../main";
+import { WON } from "../constants";
 
 export class Hanoi {
     n: number;
@@ -33,21 +33,21 @@ export class Hanoi {
         var disk = this.towers[from].pop() as Disk;
         this.towers[to].push(disk);
         this.moves++;
-        won.innerHTML = "Moves : " + this.moves.toString();
+        WON.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
-            won.innerHTML = "You won in " + this.moves.toString() + " moves!";
+            WON.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
     }
 
-    init(disks : Array<Disk>) {
+    init(disks: Array<Disk>) {
         this.n = disks.length;
-        for(var i = 0; i < disks.length; i++) {
+        for (var i = 0; i < disks.length; i++) {
             this.towers[0].push(disks[i]);
         }
     }
 
-    reset(){
+    reset() {
         this.towers = [];
         for (var i = 0; i < 3; i++) {
             let disk_array: Array<Disk> = [];
