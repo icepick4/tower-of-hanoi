@@ -39,6 +39,42 @@
     background-color: black;
 }
 
+#buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+
+#tower0 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 33%;
+    height: 65%;
+    opacity: 0;
+    z-index: 1;
+}
+
+#tower1 {
+    position: absolute;
+    bottom: 0;
+    left: 33%;
+    width: 33%;
+    height: 65%;
+    opacity: 0;
+    z-index: 1;
+}
+
+#tower2 {
+    position: absolute;
+    bottom: 0;
+    left: 66%;
+    width: 33%;
+    height: 65%;
+    opacity: 0;
+    z-index: 1;
+}
+
 body {
     /*no scroll*/
     overflow: hidden;

@@ -1,163 +1,33 @@
-"use strict";
-const input = document.querySelector("input");
-const won = document.getElementById("won");
-const BTN_PLAY = document.getElementById("play");
-const CONTAINER_DISKS = document.getElementById("disks");
-const PIC1 = document.getElementById("pic1");
-const PIC2 = document.getElementById("pic2");
-const PIC3 = document.getElementById("pic3");
-BTN_PLAY.addEventListener("click", play);
-PIC1.addEventListener("mouseover", mouseHover);
-PIC1.addEventListener("mouseout", mouseOut);
-PIC2.addEventListener("mouseover", mouseHover);
-PIC2.addEventListener("mouseout", mouseOut);
-PIC3.addEventListener("mouseover", mouseHover);
-PIC3.addEventListener("mouseout", mouseOut);
-PIC1.addEventListener("click", clickPic);
-PIC2.addEventListener("click", clickPic);
-PIC3.addEventListener("click", clickPic);
-function clickPic(ev) {
-    //get bg of pic1
-    var bg = this.style.backgroundColor;
-    var pic = Number(ev.target.id.substring(3)) - 1;
-    if (bg == "blue") {
-        this.style.backgroundColor = "black";
-    }
-    else {
-        this.style.backgroundColor = "blue";
-    }
-    move(pic);
-}
-function mouseHover() {
-    var bg = this.style.backgroundColor;
-    if (bg != "blue") {
-        this.style.backgroundColor = "red";
-    }
-}
-function mouseOut() {
-    var bg = this.style.backgroundColor;
-    if (bg != "blue") {
-        this.style.backgroundColor = "black";
-    }
-}
-//event listener on resize window
-window.addEventListener("resize", function (e) {
-    hanoi.draw();
-    PIC1.style.width = (document.body.clientWidth / 50) + "px";
-    PIC2.style.width = (document.body.clientWidth / 50) + "px";
-    PIC3.style.width = (document.body.clientWidth / 50) + "px";
-});
-var hanoi;
-function move(col) {
-    if (hanoi.clicked1 == null) {
-        hanoi.setClicked(col);
-    }
-    else {
-        unselectAll();
-        if (hanoi.can_move(hanoi.clicked1, col)) {
-            hanoi.move(hanoi.clicked1, col);
-            hanoi.draw();
-        }
-        hanoi.clicked1 = null;
-    }
-}
-function unselectAll() {
-    PIC1.style.backgroundColor = "black";
-    PIC2.style.backgroundColor = "black";
-    PIC3.style.backgroundColor = "black";
-}
-function play() {
-    //clear div with id "disks"
-    CONTAINER_DISKS.innerHTML = "";
-    unselectAll();
-    won.innerHTML = "Moves : 0";
-    if (input != null) {
-        var n = Number(input.value);
-        if (n > 0 && n <= 7) {
-            hanoi = new Hanoi(n);
-            hanoi.draw();
-        }
-    }
-}
-class Hanoi {
-    constructor(n) {
-        this.n = n;
-        this.towers = [];
-        for (var i = 0; i < 3; i++) {
-            let disk_array = [];
-            this.towers.push(disk_array);
-        }
-        for (var i = 0; i < this.n; i++) {
-            this.towers[0].push(this.n - i);
-            //i into string
-            var str = (this.n - i).toString();
-            //create a new div with id disk_i
-            var div = document.createElement("div");
-            div.id = "disk_" + str;
-            //random color for fillStyle
-            var r = Math.floor(Math.random() * 255);
-            var g = Math.floor(Math.random() * 255);
-            var b = Math.floor(Math.random() * 255);
-            div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
-            div.style.border = "1px solid black";
-            div.style.width = (document.body.clientWidth) * (this.n - 1) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.position = "absolute";
-            div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 6 - (this.n - i) * 30 + 2.5 + "px";
-            div.style.zIndex = "1";
-            CONTAINER_DISKS.appendChild(div);
-        }
-        this.moves = 0;
-        this.solved = false;
-        this.clicked1 = null;
-    }
-    setClicked(i) {
-        this.clicked1 = i;
-    }
-    can_move(from, to) {
-        if (this.towers[from].length == 0) {
-            return false;
-        }
-        else if (this.towers[to].length == 0) {
-            return true;
-        }
-        else {
-            return this.towers[from][this.towers[from].length - 1] < this.towers[to][this.towers[to].length - 1];
-        }
-    }
-    move(from, to) {
-        this.towers[to].push(this.towers[from].pop());
-        this.moves++;
-        won.innerHTML = "Moves : " + this.moves.toString();
-        if (this.towers[2].length == this.n) {
-            this.solved = true;
-            //display #won 
-            won.innerHTML = "You won in " + this.moves.toString() + " moves!";
-        }
-    }
-    draw() {
-        //draw the disks on the lines
-        for (var i = 0; i < this.towers[0].length; i++) {
-            var div = document.getElementById("disk_" + (this.towers[0][i]).toString());
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[0][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 6 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
-        }
-        for (var i = 0; i < this.towers[1].length; i++) {
-            var div = document.getElementById("disk_" + (this.towers[1][i]).toString());
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[1][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
-        }
-        for (var i = 0; i < this.towers[2].length; i++) {
-            var div = document.getElementById("disk_" + (this.towers[2][i]).toString());
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[2][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
-        }
-    }
-}
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./2d/click-to-select/src/main.ts":
+/*!****************************************!*\
+  !*** ./2d/click-to-select/src/main.ts ***!
+  \****************************************/
+/***/ (() => {
+
+eval("\r\nconst input = document.querySelector(\"input\");\r\nconst won = document.getElementById(\"won\");\r\nconst BTN_PLAY = document.getElementById(\"play\");\r\nconst CONTAINER_DISKS = document.getElementById(\"disks\");\r\nconst PIC1 = document.getElementById(\"pic1\");\r\nconst PIC2 = document.getElementById(\"pic2\");\r\nconst PIC3 = document.getElementById(\"pic3\");\r\nBTN_PLAY.addEventListener(\"click\", play);\r\nPIC1.addEventListener(\"mouseover\", mouseHover);\r\nPIC1.addEventListener(\"mouseout\", mouseOut);\r\nPIC2.addEventListener(\"mouseover\", mouseHover);\r\nPIC2.addEventListener(\"mouseout\", mouseOut);\r\nPIC3.addEventListener(\"mouseover\", mouseHover);\r\nPIC3.addEventListener(\"mouseout\", mouseOut);\r\nPIC1.addEventListener(\"click\", clickPic);\r\nPIC2.addEventListener(\"click\", clickPic);\r\nPIC3.addEventListener(\"click\", clickPic);\r\nfunction clickPic(ev) {\r\n    //get bg of pic1\r\n    var bg = this.style.backgroundColor;\r\n    var pic = Number(ev.target.id.substring(3)) - 1;\r\n    if (bg == \"blue\") {\r\n        this.style.backgroundColor = \"black\";\r\n    }\r\n    else {\r\n        this.style.backgroundColor = \"blue\";\r\n    }\r\n    move(pic);\r\n}\r\nfunction mouseHover() {\r\n    var bg = this.style.backgroundColor;\r\n    if (bg != \"blue\") {\r\n        this.style.backgroundColor = \"red\";\r\n    }\r\n}\r\nfunction mouseOut() {\r\n    var bg = this.style.backgroundColor;\r\n    if (bg != \"blue\") {\r\n        this.style.backgroundColor = \"black\";\r\n    }\r\n}\r\n//event listener on resize window\r\nwindow.addEventListener(\"resize\", function (e) {\r\n    hanoi.draw();\r\n    PIC1.style.width = (document.body.clientWidth / 50) + \"px\";\r\n    PIC2.style.width = (document.body.clientWidth / 50) + \"px\";\r\n    PIC3.style.width = (document.body.clientWidth / 50) + \"px\";\r\n});\r\nvar hanoi;\r\nfunction move(col) {\r\n    if (hanoi.clicked1 == null) {\r\n        hanoi.setClicked(col);\r\n    }\r\n    else {\r\n        unselectAll();\r\n        if (hanoi.can_move(hanoi.clicked1, col)) {\r\n            hanoi.move(hanoi.clicked1, col);\r\n            hanoi.draw();\r\n        }\r\n        hanoi.clicked1 = null;\r\n    }\r\n}\r\nfunction unselectAll() {\r\n    PIC1.style.backgroundColor = \"black\";\r\n    PIC2.style.backgroundColor = \"black\";\r\n    PIC3.style.backgroundColor = \"black\";\r\n}\r\nfunction play() {\r\n    //clear div with id \"disks\"\r\n    CONTAINER_DISKS.innerHTML = \"\";\r\n    unselectAll();\r\n    won.innerHTML = \"Moves : 0\";\r\n    if (input != null) {\r\n        var n = Number(input.value);\r\n        if (n > 0 && n <= 7) {\r\n            hanoi = new Hanoi(n);\r\n            hanoi.draw();\r\n        }\r\n    }\r\n}\r\nclass Hanoi {\r\n    n;\r\n    clicked1;\r\n    towers;\r\n    moves;\r\n    solved;\r\n    constructor(n) {\r\n        this.n = n;\r\n        this.towers = [];\r\n        for (var i = 0; i < 3; i++) {\r\n            let disk_array = [];\r\n            this.towers.push(disk_array);\r\n        }\r\n        for (var i = 0; i < this.n; i++) {\r\n            this.towers[0].push(this.n - i);\r\n            //i into string\r\n            var str = (this.n - i).toString();\r\n            //create a new div with id disk_i\r\n            var div = document.createElement(\"div\");\r\n            div.id = \"disk_\" + str;\r\n            //random color for fillStyle\r\n            var r = Math.floor(Math.random() * 255);\r\n            var g = Math.floor(Math.random() * 255);\r\n            var b = Math.floor(Math.random() * 255);\r\n            div.style.backgroundColor = \"rgb(\" + r + \", \" + g + \", \" + b + \")\";\r\n            div.style.border = \"1px solid black\";\r\n            div.style.width = (document.body.clientWidth) * (this.n - 1) / 25 + 10 + \"px\";\r\n            div.style.height = (document.body.clientWidth) / 33.333 + \"px\";\r\n            div.style.position = \"absolute\";\r\n            div.style.bottom = (i) * 45 + 30 - 10 + \"px\";\r\n            div.style.left = screen.width / 6 - (this.n - i) * 30 + 2.5 + \"px\";\r\n            div.style.zIndex = \"1\";\r\n            CONTAINER_DISKS.appendChild(div);\r\n        }\r\n        this.moves = 0;\r\n        this.solved = false;\r\n        this.clicked1 = null;\r\n    }\r\n    setClicked(i) {\r\n        this.clicked1 = i;\r\n    }\r\n    can_move(from, to) {\r\n        if (this.towers[from].length == 0) {\r\n            return false;\r\n        }\r\n        else if (this.towers[to].length == 0) {\r\n            return true;\r\n        }\r\n        else {\r\n            return this.towers[from][this.towers[from].length - 1] < this.towers[to][this.towers[to].length - 1];\r\n        }\r\n    }\r\n    move(from, to) {\r\n        this.towers[to].push(this.towers[from].pop());\r\n        this.moves++;\r\n        won.innerHTML = \"Moves : \" + this.moves.toString();\r\n        if (this.towers[2].length == this.n) {\r\n            this.solved = true;\r\n            //display #won \r\n            won.innerHTML = \"You won in \" + this.moves.toString() + \" moves!\";\r\n        }\r\n    }\r\n    draw() {\r\n        //draw the disks on the lines\r\n        for (var i = 0; i < this.towers[0].length; i++) {\r\n            var div = document.getElementById(\"disk_\" + (this.towers[0][i]).toString());\r\n            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + \"px\";\r\n            div.style.width = (document.body.clientWidth) * (this.towers[0][i]) / 25 + 10 + \"px\";\r\n            div.style.height = (document.body.clientWidth) / 33.333 + \"px\";\r\n            div.style.left = document.body.clientWidth / 6 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + \"px\";\r\n        }\r\n        for (var i = 0; i < this.towers[1].length; i++) {\r\n            var div = document.getElementById(\"disk_\" + (this.towers[1][i]).toString());\r\n            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + \"px\";\r\n            div.style.width = (document.body.clientWidth) * (this.towers[1][i]) / 25 + 10 + \"px\";\r\n            div.style.height = (document.body.clientWidth) / 33.333 + \"px\";\r\n            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + \"px\";\r\n        }\r\n        for (var i = 0; i < this.towers[2].length; i++) {\r\n            var div = document.getElementById(\"disk_\" + (this.towers[2][i]).toString());\r\n            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + \"px\";\r\n            div.style.width = (document.body.clientWidth) * (this.towers[2][i]) / 25 + 10 + \"px\";\r\n            div.style.height = (document.body.clientWidth) / 33.333 + \"px\";\r\n            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + \"px\";\r\n        }\r\n    }\r\n}\r\n\n\n//# sourceURL=webpack://tower-of-hanoi/./2d/click-to-select/src/main.ts?");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
+/******/ 	var __webpack_exports__ = {};
+/******/ 	__webpack_modules__["./2d/click-to-select/src/main.ts"]();
+/******/ 	
+/******/ })()
+;

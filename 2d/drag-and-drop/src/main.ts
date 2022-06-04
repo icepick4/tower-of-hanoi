@@ -8,6 +8,9 @@ import {
     PIC3_AREA,
     INPUT,
     WON,
+    TOWER0,
+    TOWER1,
+    TOWER2
 } from "./constants";
 
 var startDragCol: number;
@@ -38,12 +41,12 @@ function setEvents() {
         PIC1.children[i].addEventListener("dragstart", handleDragStart);
         PIC1.children[i].addEventListener("dragend", handleDragEnd);
     }
-    PIC1_AREA.addEventListener("dragover", allowDrop);
-    PIC2_AREA.addEventListener("dragover", allowDrop);
-    PIC3_AREA.addEventListener("dragover", allowDrop);
-    PIC1_AREA.addEventListener("drop", drop);
-    PIC2_AREA.addEventListener("drop", drop);
-    PIC3_AREA.addEventListener("drop", drop);
+    TOWER0.addEventListener("dragover", allowDrop);
+    TOWER1.addEventListener("dragover", allowDrop);
+    TOWER2.addEventListener("dragover", allowDrop);
+    TOWER0.addEventListener("drop", drop);
+    TOWER1.addEventListener("drop", drop);
+    TOWER2.addEventListener("drop", drop);
 }
 
 function allowDrop(ev: DragEvent) {
@@ -55,7 +58,7 @@ function drop(ev: DragEvent) {
     //get the id of the pic where we drop
     if (ev.target != null) {
         var id: string = (ev.target as HTMLElement).id;
-        var col: number = Number(id.substring(3, 4)) - 1;
+        var col: number = Number(id.substring(5, 6));
         move(col);
     }
 }
@@ -82,7 +85,7 @@ function handleDragEnd(this: HTMLElement) {
 
 function move(col: number) {
     var diskAtTop =
-        hanoi.towers[col - 1][hanoi.towers[col - 1].length - 1] ==
+        hanoi.towers[startDragCol][hanoi.towers[startDragCol].length - 1] ==
         startDragDisk;
     if (hanoi.can_move(startDragCol, col) && diskAtTop) {
         hanoi.move(startDragCol, col);
@@ -126,32 +129,11 @@ class Hanoi {
         }
         for (var i = 0; i < this.n; i++) {
             this.towers[0].push(this.n - i);
-
             //i into string
             var str = (this.n - i).toString();
             //create a new div with id disk_i
             var div = document.createElement("div");
-            div.id = "disk_" + str;
-
-            //random color for fillStyle
-            var r = Math.floor(Math.random() * 255);
-            var g = Math.floor(Math.random() * 255);
-            var b = Math.floor(Math.random() * 255);
-            div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
-            div.style.border = "1px solid black";
-
-            div.style.width =
-                (document.body.clientWidth * (this.n - 1)) / 25 + 10 + "px";
-            div.style.height = document.body.clientWidth / 33.333 + "px";
-            div.style.position = "absolute";
-            div.draggable = true;
-            div.style.cursor = "move";
-
-            div.style.bottom = i * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 6 - (this.n - i) * 30 + 2.5 + "px";
-            div.style.zIndex = "1";
-
-            PIC1.appendChild(div);
+            PIC1.appendChild(initDiv(div, n, i, str));
         }
         this.moves = 0;
         this.solved = false;
@@ -253,4 +235,26 @@ class Hanoi {
                 "px";
         }
     }
+}
+
+function initDiv(div: HTMLElement, n: number, i: number, str: string) {
+    div.id = "disk_" + str;
+    //random color for fillStyle
+    var r = Math.floor(Math.random() * 255);
+    var g = Math.floor(Math.random() * 255);
+    var b = Math.floor(Math.random() * 255);
+    div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
+    div.style.border = "1px solid black";
+
+    div.style.width =
+        (document.body.clientWidth * (n - 1)) / 25 + 10 + "px";
+    div.style.height = document.body.clientWidth / 33.333 + "px";
+    div.style.position = "absolute";
+    div.draggable = true;
+    div.style.cursor = "move";
+
+    div.style.bottom = i * 45 + 30 - 10 + "px";
+    div.style.left = screen.width / 6 - (n - i) * 30 + 2.5 + "px";
+    div.style.zIndex = "2";
+    return div
 }

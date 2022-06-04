@@ -21,3 +21,7 @@ export const PIC3_AREA: HTMLElement = document.getElementById(
 PIC1_AREA.style.width = document.body.clientWidth / 50 + "px";
 PIC2_AREA.style.width = document.body.clientWidth / 50 + "px";
 PIC3_AREA.style.width = document.body.clientWidth / 50 + "px";
+
+export const TOWER0: HTMLElement = document.getElementById("tower0") as HTMLElement;
+export const TOWER1: HTMLElement = document.getElementById("tower1") as HTMLElement;
+export const TOWER2: HTMLElement = document.getElementById("tower2") as HTMLElement;
