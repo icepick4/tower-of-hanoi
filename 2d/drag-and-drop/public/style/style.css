@@ -1,4 +1,4 @@
-#pic1Area {
+#pic-area-0 {
     position: absolute;
     bottom: 20px;
     left: 16.6667%;
@@ -8,7 +8,7 @@
     background-color: black;
 }
 
-#pic2Area {
+#pic-area-1 {
     position: absolute;
     bottom: 20px;
     left: 50%;
@@ -18,7 +18,7 @@
     background-color: black;
 }
 
-#pic3Area {
+#pic-area-2 {
     position: absolute;
     bottom: 20px;
     left: 80%;
@@ -45,7 +45,7 @@
 }
 
 
-#tower0 {
+#DROP_AREA0 {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -55,7 +55,7 @@
     z-index: 1;
 }
 
-#tower1 {
+#DROP_AREA1 {
     position: absolute;
     bottom: 0;
     left: 33%;
@@ -65,7 +65,7 @@
     z-index: 1;
 }
 
-#tower2 {
+#DROP_AREA2 {
     position: absolute;
     bottom: 0;
     left: 66%;

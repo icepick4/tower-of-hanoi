@@ -1,16 +1,10 @@
 import {
     BTN_PLAY,
-    PIC1,
-    PIC2,
-    PIC3,
-    PIC1_AREA,
-    PIC2_AREA,
-    PIC3_AREA,
+    TOWERS,
+    TOWERS_AREAS,
     INPUT,
     WON,
-    TOWER0,
-    TOWER1,
-    TOWER2
+    DROP_AREAS
 } from "./constants";
 
 var startDragCol: number;
@@ -24,9 +18,9 @@ window.addEventListener("resize", function (e) {
     if (hanoi != null) {
         hanoi.draw();
     }
-    PIC1_AREA.style.width = document.body.clientWidth / 50 + "px";
-    PIC2_AREA.style.width = document.body.clientWidth / 50 + "px";
-    PIC3_AREA.style.width = document.body.clientWidth / 50 + "px";
+    for (let i = 0; i < TOWERS_AREAS.length; i++) {
+        TOWERS_AREAS[i].style.width = document.body.clientWidth / 50 + "px";
+    }
 });
 
 //event on opening devtools
@@ -37,20 +31,35 @@ window.addEventListener("click", function (e) {
 });
 
 function setEvents() {
-    for (var i = 0; i < PIC1.children.length; i++) {
-        PIC1.children[i].addEventListener("dragstart", handleDragStart);
-        PIC1.children[i].addEventListener("dragend", handleDragEnd);
+    for (var i = 0; i < TOWERS[0].children.length; i++) {
+        TOWERS[0].children[i].addEventListener("dragstart", handleDragStart);
+        TOWERS[0].children[i].addEventListener("dragend", handleDragEnd);
     }
-    TOWER0.addEventListener("dragover", allowDrop);
-    TOWER1.addEventListener("dragover", allowDrop);
-    TOWER2.addEventListener("dragover", allowDrop);
-    TOWER0.addEventListener("drop", drop);
-    TOWER1.addEventListener("drop", drop);
-    TOWER2.addEventListener("drop", drop);
+    for (var i = 0; i < DROP_AREAS.length; i++) {
+        DROP_AREAS[i].addEventListener("dragover", allowDrop);
+        DROP_AREAS[i].addEventListener("drop", drop);
+    }
 }
 
 function allowDrop(ev: DragEvent) {
     ev.preventDefault();
+    var diskAtTop =
+        hanoi.towers[startDragCol][hanoi.towers[startDragCol].length - 1] ==
+        startDragDisk;
+    //get the tower we are over
+    if (ev.target != null) {
+        //get id
+        var id: string = (ev.target as HTMLElement).id;
+        //id equald last char of id
+        var col: number = Number(id.substring(id.length - 1));
+        for (let i = 0; i < TOWERS_AREAS.length; i++) {
+            if (TOWERS_AREAS[i].id == "pic-area-" + col && hanoi.can_move(startDragCol, i) && diskAtTop) {
+                TOWERS_AREAS[i].style.backgroundColor = "purple";
+            } else {
+                TOWERS_AREAS[i].style.backgroundColor = "black";
+            }
+        }
+    }
 }
 
 function drop(ev: DragEvent) {
@@ -58,15 +67,18 @@ function drop(ev: DragEvent) {
     //get the id of the pic where we drop
     if (ev.target != null) {
         var id: string = (ev.target as HTMLElement).id;
-        var col: number = Number(id.substring(5, 6));
+        var col: number = Number(id.substring(id.length - 1));
         move(col);
+    }
+    for (let i = 0; i < TOWERS_AREAS.length; i++) {
+        TOWERS_AREAS[i].style.backgroundColor = "black";
     }
 }
 
 function handleDragStart(this: HTMLElement) {
     this.style.opacity = "0.75";
     this.style.border = "1px dashed #000";
-    var disk: number = Number(this.id.substring(5, 6));
+    var disk: number = Number(this.id.substring(this.id.length - 1));
     for (var i = 0; i < 3; i++) {
         for (var j = 0; j < hanoi.towers[i].length; j++) {
             if (hanoi.towers[i][j] == disk) {
@@ -101,9 +113,9 @@ function removeDiskFromPic(pic: HTMLElement) {
 
 function play() {
     //clear divs
-    PIC1.innerHTML = "";
-    PIC2.innerHTML = "";
-    PIC3.innerHTML = "";
+    for (var i = 0; i < TOWERS.length; i++) {
+        TOWERS[i].innerHTML = "";
+    }
     WON.innerHTML = "Moves : 0";
     if (INPUT != null) {
         var n: number = Number(INPUT.value);
@@ -133,7 +145,7 @@ class Hanoi {
             var str = (this.n - i).toString();
             //create a new div with id disk_i
             var div = document.createElement("div");
-            PIC1.appendChild(initDiv(div, n, i, str));
+            TOWERS[0].appendChild(initDiv(div, n, i, str));
         }
         this.moves = 0;
         this.solved = false;
@@ -154,21 +166,8 @@ class Hanoi {
 
     move(from: number, to: number) {
         //remove the last child in the pic number from
-        var lastChild: HTMLElement;
-        if (from == 0) {
-            lastChild = removeDiskFromPic(PIC1);
-        } else if (from == 1) {
-            lastChild = removeDiskFromPic(PIC2);
-        } else {
-            lastChild = removeDiskFromPic(PIC3);
-        }
-        if (to == 0) {
-            PIC1.appendChild(lastChild);
-        } else if (to == 1) {
-            PIC2.appendChild(lastChild);
-        } else {
-            PIC3.appendChild(lastChild);
-        }
+        var lastChild: HTMLElement = removeDiskFromPic(TOWERS[from]);
+        TOWERS[to].appendChild(lastChild);
 
         this.towers[to].push(this.towers[from].pop() as number);
 
@@ -183,56 +182,40 @@ class Hanoi {
 
     draw() {
         //draw the disks on the lines
-        for (var i = 0; i < this.towers[0].length; i++) {
-            var div: HTMLElement = document.getElementById(
-                "disk_" + this.towers[0][i].toString()
-            ) as HTMLElement;
-            div.style.bottom =
-                (i * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width =
-                (document.body.clientWidth * this.towers[0][i]) / 25 +
-                10 +
-                "px";
-            div.style.height = document.body.clientWidth / 33.333 + "px";
-            div.style.left =
-                document.body.clientWidth / 6 -
-                div.offsetWidth / 2 +
-                PIC1_AREA.offsetWidth / 2 +
-                "px";
-        }
-        for (var i = 0; i < this.towers[1].length; i++) {
-            var div: HTMLElement = document.getElementById(
-                "disk_" + this.towers[1][i].toString()
-            ) as HTMLElement;
-            div.style.bottom =
-                (i * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width =
-                (document.body.clientWidth * this.towers[1][i]) / 25 +
-                10 +
-                "px";
-            div.style.height = document.body.clientWidth / 33.333 + "px";
-            div.style.left =
-                document.body.clientWidth / 2 -
-                div.offsetWidth / 2 +
-                PIC1_AREA.offsetWidth / 2 +
-                "px";
-        }
-        for (var i = 0; i < this.towers[2].length; i++) {
-            var div: HTMLElement = document.getElementById(
-                "disk_" + this.towers[2][i].toString()
-            ) as HTMLElement;
-            div.style.bottom =
-                (i * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width =
-                (document.body.clientWidth * this.towers[2][i]) / 25 +
-                10 +
-                "px";
-            div.style.height = document.body.clientWidth / 33.333 + "px";
-            div.style.left =
-                document.body.clientWidth / 1.25 -
-                div.offsetWidth / 2 +
-                PIC1_AREA.offsetWidth / 2 +
-                "px";
+        for (var i = 0; i < 3; i++) {
+            for (var j = 0; j < this.towers[i].length; j++) {
+                var div: HTMLElement = document.getElementById(
+                    "disk_" + this.towers[i][j].toString()
+                ) as HTMLElement;
+                div.style.bottom =
+                    (j * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+                div.style.width =
+                    (document.body.clientWidth * this.towers[i][j]) / 25 +
+                    10 +
+                    "px";
+                div.style.height = document.body.clientWidth / 33.333 + "px";
+                if (i == 0) {
+                    div.style.left =
+                        document.body.clientWidth / 6 -
+                        div.offsetWidth / 2 +
+                        TOWERS_AREAS[0].offsetWidth / 2 +
+                        "px";
+                }
+                else if (i == 1) {
+                    div.style.left =
+                        document.body.clientWidth / 2 -
+                        div.offsetWidth / 2 +
+                        TOWERS_AREAS[1].offsetWidth / 2 +
+                        "px";
+                }
+                else {
+                    div.style.left =
+                        document.body.clientWidth / 1.25 -
+                        div.offsetWidth / 2 +
+                        TOWERS_AREAS[2].offsetWidth / 2 +
+                        "px";
+                }
+            }
         }
     }
 }
