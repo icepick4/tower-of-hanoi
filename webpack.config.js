@@ -3,13 +3,13 @@ const webpack = require("webpack");
 
 module.exports = {
     mode: "development",
-    entry: "./2d/drag-and-drop/src/main.ts",
+    entry: "./threejs/src/main.ts",
     module: {
         rules: [
             {
                 test: /.ts?$/,
                 use: "ts-loader",
-                include: [path.resolve(__dirname, "2d/drag-and-drop/src")],
+                include: [path.resolve(__dirname, "threejs/src")],
             },
         ],
     },
@@ -17,9 +17,9 @@ module.exports = {
         extensions: [".ts", ".js"],
     },
     output: {
-        publicPath: "2d/drag-and-drop/public",
+        publicPath: "threejs/public",
         filename: "main.js",
-        path: path.resolve(__dirname, "2d/drag-and-drop/public/js"),
+        path: path.resolve(__dirname, "threejs/public/js"),
     },
     plugins: [
         new webpack.DefinePlugin({

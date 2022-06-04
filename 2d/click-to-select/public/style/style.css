@@ -39,6 +39,10 @@
     background-color: black;
 }
 
+.over-underline:hover {
+    text-decoration: underline;
+}
+
 body {
     /*no scroll*/
     overflow: hidden;

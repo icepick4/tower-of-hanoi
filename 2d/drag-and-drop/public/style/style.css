@@ -75,6 +75,10 @@
     z-index: 1;
 }
 
+.over-underline:hover {
+    text-decoration: underline;
+}
+
 body {
     /*no scroll*/
     overflow: hidden;
