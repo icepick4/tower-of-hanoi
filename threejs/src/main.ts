@@ -15,32 +15,28 @@ import {
     HANOI,
 } from "./constants";
 
-var selectedDisk: Disk | null;
-var movingTop: boolean = false;
-var movingCol: Tower | null = null;
-var canPlace = false;
-var xSpeed = 1;
+let selectedDisk: Disk | null;
+let movingTop = false;
+let movingCol: Tower | null = null;
+let canPlace = false;
+const xSpeed = 1;
 
 let renderer: THREE.WebGLRenderer,
     camera: THREE.PerspectiveCamera,
     scene: THREE.Scene,
-    controls: OrbitControls,
-    mouse: THREE.Vector2,
-    raycaster: THREE.Raycaster,
-    disks: Array<Disk>,
-    towers: Array<Tower>;
+    controls: OrbitControls;
 
-mouse = new THREE.Vector2();
-raycaster = new THREE.Raycaster();
-disks = new Array<Disk>();
-towers = new Array<Tower>();
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+let disks = new Array<Disk>();
+const towers = new Array<Tower>();
 
 BTN_PLAY.addEventListener("click", () => {
     //reset the game
     HANOI.reset();
     resetGamePlay();
     if (INPUT != null) {
-        var n: number = Number(INPUT.value);
+        const n = Number(INPUT.value);
         if (n > 0 && n <= 7) {
             initDisks(n);
         }
@@ -68,22 +64,22 @@ function onMouseMove(event: MouseEvent) {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }
 
-function onMouseClick(event: MouseEvent) {
+function onMouseClick() {
     raycasting(true);
 }
 
 function raycasting(click: boolean) {
     raycaster.setFromCamera(mouse, camera);
-    var intersects = raycaster.intersectObject(scene, true);
+    const intersects = raycaster.intersectObject(scene, true);
     if (intersects.length > 0) {
-        var mesh = intersects[0].object as THREE.Mesh;
-        for (let disk of disks) {
+        const mesh = intersects[0].object as THREE.Mesh;
+        for (const disk of disks) {
             if (disk.mesh != mesh && disk != selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({
                     color: disk.color,
                 });
             } else {
-                var diskAtTop = false;
+                let diskAtTop = false;
                 diskAtTop =
                     HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1] ==
                     disk;
@@ -113,7 +109,7 @@ function raycasting(click: boolean) {
                 }
             }
         }
-        for (let tower of towers) {
+        for (const tower of towers) {
             if (tower.mesh != mesh) {
                 tower.mesh.material = MATERIAL_TOWER;
             } else {
@@ -146,14 +142,14 @@ function raycasting(click: boolean) {
             }
         }
     } else {
-        for (let disk of disks) {
+        for (const disk of disks) {
             if (disk != selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({
                     color: disk.color,
                 });
             }
         }
-        for (let tower of towers) {
+        for (const tower of towers) {
             tower.mesh.material = MATERIAL_TOWER;
         }
     }
@@ -178,13 +174,12 @@ function moveTop(disk: Disk) {
 }
 
 function moveCol(disk: Disk, tower: Tower) {
-    var lenCol = HANOI.towers[tower.index].length;
-    var distanceY: number;
+    let lenCol = HANOI.towers[tower.index].length;
     if (canPlace) {
         lenCol++;
     }
 
-    distanceY = lenCol * disk.height - disk.height / 2;
+    const distanceY = lenCol * disk.height - disk.height / 2;
 
     if (tower.index == 0) {
         if (
@@ -253,12 +248,12 @@ function moveCol(disk: Disk, tower: Tower) {
 
 function initDisks(n: number) {
     for (let i = 0; i < n; i++) {
-        var r = Math.floor(Math.random() * 255);
-        var g = Math.floor(Math.random() * 255);
-        var b = Math.floor(Math.random() * 255);
-        var rgb = "rgb(" + r + "," + g + "," + b + ")";
-        var radius = n - i + 0.5;
-        var disk = new Disk(
+        const r = Math.floor(Math.random() * 255);
+        const g = Math.floor(Math.random() * 255);
+        const b = Math.floor(Math.random() * 255);
+        const rgb = "rgb(" + r + "," + g + "," + b + ")";
+        const radius = n - i + 0.5;
+        const disk = new Disk(
             new THREE.CylinderGeometry(
                 radius,
                 radius,
@@ -279,7 +274,7 @@ function initDisks(n: number) {
 }
 
 function resetGamePlay() {
-    for (let disk of disks) {
+    for (const disk of disks) {
         scene.remove(disk.mesh);
     }
     disks = [];
@@ -301,7 +296,7 @@ function init() {
     );
 
     //init a rectangle
-    var base = new THREE.Mesh(
+    const base = new THREE.Mesh(
         new THREE.BoxGeometry(55, 0.5, 17.5),
         new THREE.MeshBasicMaterial({ color: "black" })
     );

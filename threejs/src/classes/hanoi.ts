@@ -8,8 +8,8 @@ export class Hanoi {
     solved: boolean;
     constructor() {
         this.towers = [];
-        for (var i = 0; i < 3; i++) {
-            let disk_array: Array<Disk> = [];
+        for (let i = 0; i < 3; i++) {
+            const disk_array: Array<Disk> = [];
             this.towers.push(disk_array);
         }
         this.moves = 0;
@@ -31,7 +31,7 @@ export class Hanoi {
     }
 
     move(from: number, to: number) {
-        var disk = this.towers[from].pop() as Disk;
+        const disk = this.towers[from].pop() as Disk;
         this.towers[to].push(disk);
         this.moves++;
         WON.innerHTML = "Moves : " + this.moves.toString();
@@ -43,15 +43,15 @@ export class Hanoi {
 
     init(disks: Array<Disk>) {
         this.n = disks.length;
-        for (var i = 0; i < disks.length; i++) {
+        for (let i = 0; i < disks.length; i++) {
             this.towers[0].push(disks[i]);
         }
     }
 
     reset() {
         this.towers = [];
-        for (var i = 0; i < 3; i++) {
-            let disk_array: Array<Disk> = [];
+        for (let i = 0; i < 3; i++) {
+            const disk_array: Array<Disk> = [];
             this.towers.push(disk_array);
         }
         this.moves = 0;

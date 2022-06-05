@@ -7,14 +7,14 @@ import {
     DROP_AREAS
 } from "./constants";
 
-var startDragCol: number;
-var startDragDisk: number;
-var hanoi: Hanoi;
+let startDragCol: number;
+let startDragDisk: number;
+let hanoi: Hanoi;
 
 BTN_PLAY.addEventListener("click", play);
 
 //event listener on resize window
-window.addEventListener("resize", function (e) {
+window.addEventListener("resize", function () {
     if (hanoi != null) {
         hanoi.draw();
     }
@@ -24,18 +24,18 @@ window.addEventListener("resize", function (e) {
 });
 
 //event on opening devtools
-window.addEventListener("click", function (e) {
+window.addEventListener("click", function () {
     if (hanoi != null) {
         hanoi.draw();
     }
 });
 
 function setEvents() {
-    for (var i = 0; i < TOWERS[0].children.length; i++) {
+    for (let i = 0; i < TOWERS[0].children.length; i++) {
         TOWERS[0].children[i].addEventListener("dragstart", handleDragStart);
         TOWERS[0].children[i].addEventListener("dragend", handleDragEnd);
     }
-    for (var i = 0; i < DROP_AREAS.length; i++) {
+    for (let i = 0; i < DROP_AREAS.length; i++) {
         DROP_AREAS[i].addEventListener("dragover", allowDrop);
         DROP_AREAS[i].addEventListener("drop", drop);
     }
@@ -43,15 +43,15 @@ function setEvents() {
 
 function allowDrop(ev: DragEvent) {
     ev.preventDefault();
-    var diskAtTop =
+    const diskAtTop =
         hanoi.towers[startDragCol][hanoi.towers[startDragCol].length - 1] ==
         startDragDisk;
     //get the tower we are over
     if (ev.target != null) {
         //get id
-        var id: string = (ev.target as HTMLElement).id;
+        const id: string = (ev.target as HTMLElement).id;
         //id equald last char of id
-        var col: number = Number(id.substring(id.length - 1));
+        const col = Number(id.substring(id.length - 1));
         for (let i = 0; i < TOWERS_AREAS.length; i++) {
             if (TOWERS_AREAS[i].id == "pic-area-" + col && hanoi.can_move(startDragCol, i) && diskAtTop) {
                 TOWERS_AREAS[i].style.backgroundColor = "purple";
@@ -66,8 +66,8 @@ function drop(ev: DragEvent) {
     ev.preventDefault();
     //get the id of the pic where we drop
     if (ev.target != null) {
-        var id: string = (ev.target as HTMLElement).id;
-        var col: number = Number(id.substring(id.length - 1));
+        const id: string = (ev.target as HTMLElement).id;
+        const col = Number(id.substring(id.length - 1));
         move(col);
     }
     for (let i = 0; i < TOWERS_AREAS.length; i++) {
@@ -78,9 +78,9 @@ function drop(ev: DragEvent) {
 function handleDragStart(this: HTMLElement) {
     this.style.opacity = "0.75";
     this.style.border = "1px dashed #000";
-    var disk: number = Number(this.id.substring(this.id.length - 1));
-    for (var i = 0; i < 3; i++) {
-        for (var j = 0; j < hanoi.towers[i].length; j++) {
+    const disk = Number(this.id.substring(this.id.length - 1));
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < hanoi.towers[i].length; j++) {
             if (hanoi.towers[i][j] == disk) {
                 startDragCol = i;
                 startDragDisk = disk;
@@ -96,7 +96,7 @@ function handleDragEnd(this: HTMLElement) {
 }
 
 function move(col: number) {
-    var diskAtTop =
+    const diskAtTop =
         hanoi.towers[startDragCol][hanoi.towers[startDragCol].length - 1] ==
         startDragDisk;
     if (hanoi.can_move(startDragCol, col) && diskAtTop) {
@@ -106,19 +106,19 @@ function move(col: number) {
 }
 
 function removeDiskFromPic(pic: HTMLElement) {
-    var disk: HTMLElement = pic.lastChild as HTMLElement;
+    const disk: HTMLElement = pic.lastChild as HTMLElement;
     pic.removeChild(disk);
     return disk;
 }
 
 function play() {
     //clear divs
-    for (var i = 0; i < TOWERS.length; i++) {
+    for (let i = 0; i < TOWERS.length; i++) {
         TOWERS[i].innerHTML = "";
     }
     WON.innerHTML = "Moves : 0";
     if (INPUT != null) {
-        var n: number = Number(INPUT.value);
+        const n = Number(INPUT.value);
         if (n > 0 && n <= 7) {
             hanoi = new Hanoi(n);
             hanoi.draw();
@@ -135,16 +135,16 @@ class Hanoi {
     constructor(n: number) {
         this.n = n;
         this.towers = [];
-        for (var i = 0; i < 3; i++) {
-            let disk_array: Array<number> = [];
+        for (let i = 0; i < 3; i++) {
+            const disk_array: Array<number> = [];
             this.towers.push(disk_array);
         }
-        for (var i = 0; i < this.n; i++) {
+        for (let i = 0; i < this.n; i++) {
             this.towers[0].push(this.n - i);
             //i into string
-            var str = (this.n - i).toString();
+            const str = (this.n - i).toString();
             //create a new div with id disk_i
-            var div = document.createElement("div");
+            const div = document.createElement("div");
             TOWERS[0].appendChild(initDiv(div, n, i, str));
         }
         this.moves = 0;
@@ -166,7 +166,7 @@ class Hanoi {
 
     move(from: number, to: number) {
         //remove the last child in the pic number from
-        var lastChild: HTMLElement = removeDiskFromPic(TOWERS[from]);
+        const lastChild: HTMLElement = removeDiskFromPic(TOWERS[from]);
         TOWERS[to].appendChild(lastChild);
 
         this.towers[to].push(this.towers[from].pop() as number);
@@ -182,9 +182,9 @@ class Hanoi {
 
     draw() {
         //draw the disks on the lines
-        for (var i = 0; i < 3; i++) {
-            for (var j = 0; j < this.towers[i].length; j++) {
-                var div: HTMLElement = document.getElementById(
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < this.towers[i].length; j++) {
+                const div: HTMLElement = document.getElementById(
                     "disk_" + this.towers[i][j].toString()
                 ) as HTMLElement;
                 div.style.bottom =
@@ -223,9 +223,9 @@ class Hanoi {
 function initDiv(div: HTMLElement, n: number, i: number, str: string) {
     div.id = "disk_" + str;
     //random color for fillStyle
-    var r = Math.floor(Math.random() * 255);
-    var g = Math.floor(Math.random() * 255);
-    var b = Math.floor(Math.random() * 255);
+    const r = Math.floor(Math.random() * 255);
+    const g = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
     div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
     div.style.border = "1px solid black";
 
