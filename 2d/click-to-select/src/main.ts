@@ -1,28 +1,20 @@
-const input = document.querySelector("input");
-const won: HTMLElement = document.getElementById("won") as HTMLElement;
-const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
-const CONTAINER_DISKS: HTMLElement = document.getElementById("disks") as HTMLElement;
-
-const PIC1: HTMLElement = document.getElementById("pic1") as HTMLElement;
-const PIC2: HTMLElement = document.getElementById("pic2") as HTMLElement;
-const PIC3: HTMLElement = document.getElementById("pic3") as HTMLElement;
+import {
+    INPUT,
+    WON,
+    BTN_PLAY,
+    CONTAINER_DISKS,
+    TOWERS
+} from "./constants";
 
 BTN_PLAY.addEventListener("click", play);
 
-PIC1.addEventListener("mouseover", mouseHover);
-PIC1.addEventListener("mouseout", mouseOut);
+for (let i = 0; i < TOWERS.length; i++) {
+    TOWERS[i].addEventListener("click", clickTower);
+    TOWERS[i].addEventListener("mouseover", mouseHover);
+    TOWERS[i].addEventListener("mouseout", mouseOut);
+}
 
-PIC2.addEventListener("mouseover", mouseHover);
-PIC2.addEventListener("mouseout", mouseOut);
-
-PIC3.addEventListener("mouseover", mouseHover);
-PIC3.addEventListener("mouseout", mouseOut);
-
-PIC1.addEventListener("click", clickPic);
-PIC2.addEventListener("click", clickPic);
-PIC3.addEventListener("click", clickPic);
-
-function clickPic(this: HTMLElement, ev: MouseEvent) {
+function clickTower(this: HTMLElement, ev: MouseEvent) {
     //get bg of pic1
     const bg = this.style.backgroundColor;
     const pic = Number((ev.target as HTMLElement).id.substring(3)) - 1;
@@ -53,9 +45,9 @@ function mouseOut(this: HTMLElement) {
 //event listener on resize window
 window.addEventListener("resize", function () {
     hanoi.draw();
-    PIC1.style.width = (document.body.clientWidth / 50) + "px";
-    PIC2.style.width = (document.body.clientWidth / 50) + "px";
-    PIC3.style.width = (document.body.clientWidth / 50) + "px";
+    for (let i = 0; i < TOWERS.length; i++) {
+        TOWERS[i].style.width = (document.body.clientWidth / 50) + "px";
+    }
 });
 
 let hanoi: Hanoi;
@@ -75,18 +67,18 @@ function move(col: number) {
 }
 
 function unselectAll() {
-    PIC1.style.backgroundColor = "black";
-    PIC2.style.backgroundColor = "black";
-    PIC3.style.backgroundColor = "black";
+    for (let i = 0; i < TOWERS.length; i++) {
+        TOWERS[i].style.backgroundColor = "black";
+    }
 }
 
 function play() {
     //clear div with id "disks"
     CONTAINER_DISKS.innerHTML = "";
     unselectAll();
-    won.innerHTML = "Moves : 0";
-    if (input != null) {
-        const n = Number(input.value);
+    WON.innerHTML = "Moves : 0";
+    if (INPUT != null) {
+        const n = Number(INPUT.value);
         if (n > 0 && n <= 7) {
             hanoi = new Hanoi(n);
             hanoi.draw();
@@ -114,24 +106,7 @@ class Hanoi {
             const str = (this.n - i).toString();
             //create a new div with id disk_i
             const div = document.createElement("div");
-            div.id = "disk_" + str;
-
-            //random color for fillStyle
-            const r = Math.floor(Math.random() * 255);
-            const g = Math.floor(Math.random() * 255);
-            const b = Math.floor(Math.random() * 255);
-            div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
-            div.style.border = "1px solid black";
-
-            div.style.width = (document.body.clientWidth) * (this.n - 1) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.position = "absolute";
-
-            div.style.bottom = (i) * 45 + 30 - 10 + "px";
-            div.style.left = screen.width / 6 - (this.n - i) * 30 + 2.5 + "px";
-            div.style.zIndex = "1";
-
-            CONTAINER_DISKS.appendChild(div);
+            CONTAINER_DISKS.appendChild(initDiv(div, n, i, str));
         }
         this.moves = 0;
         this.solved = false;
@@ -157,39 +132,74 @@ class Hanoi {
     move(from: number, to: number) {
         this.towers[to].push(this.towers[from].pop() as number);
         this.moves++;
-        won.innerHTML = "Moves : " + this.moves.toString();
+        WON.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
             //display #won 
-            won.innerHTML = "You won in " + this.moves.toString() + " moves!";
+            WON.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
     }
 
     draw() {
         //draw the disks on the lines
-        for (let i = 0; i < this.towers[0].length; i++) {
-            const div: HTMLElement = document.getElementById("disk_" + (this.towers[0][i]).toString()) as HTMLElement;
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[0][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 6 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
-        }
-        for (let i = 0; i < this.towers[1].length; i++) {
-            const div: HTMLElement = document.getElementById("disk_" + (this.towers[1][i]).toString()) as HTMLElement;
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[1][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 2 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
-        }
-        for (let i = 0; i < this.towers[2].length; i++) {
-            const div: HTMLElement = document.getElementById("disk_" + (this.towers[2][i]).toString()) as HTMLElement;
-            div.style.bottom = (i) * (document.body.clientWidth) / 33.333 + 30 - 10 + "px";
-            div.style.width = (document.body.clientWidth) * (this.towers[2][i]) / 25 + 10 + "px";
-            div.style.height = (document.body.clientWidth) / 33.333 + "px";
-            div.style.left = document.body.clientWidth / 1.25 - div.offsetWidth / 2 + PIC1.offsetWidth / 2 + "px";
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < this.towers[i].length; j++) {
+                const div: HTMLElement = document.getElementById(
+                    "disk_" + this.towers[i][j].toString()
+                ) as HTMLElement;
+                div.style.bottom =
+                    (j * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+                div.style.width =
+                    (document.body.clientWidth * this.towers[i][j]) / 25 +
+                    10 +
+                    "px";
+                div.style.height = document.body.clientWidth / 33.333 + "px";
+                if (i == 0) {
+                    div.style.left =
+                        document.body.clientWidth / 6 -
+                        div.offsetWidth / 2 +
+                        TOWERS[0].offsetWidth / 2 +
+                        "px";
+                }
+                else if (i == 1) {
+                    div.style.left =
+                        document.body.clientWidth / 2 -
+                        div.offsetWidth / 2 +
+                        TOWERS[1].offsetWidth / 2 +
+                        "px";
+                }
+                else {
+                    div.style.left =
+                        document.body.clientWidth / 1.25 -
+                        div.offsetWidth / 2 +
+                        TOWERS[2].offsetWidth / 2 +
+                        "px";
+                }
+            }
         }
     }
 }
+
+function initDiv(div: HTMLElement, n: number, i: number, str: string) {
+    div.id = "disk_" + str;
+    //random color for fillStyle
+    const r = Math.floor(Math.random() * 255);
+    const g = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
+    div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
+    div.style.border = "1px solid black";
+
+    div.style.width =
+        (document.body.clientWidth * (n - 1)) / 25 + 10 + "px";
+    div.style.height = document.body.clientWidth / 33.333 + "px";
+    div.style.position = "absolute";
+
+    div.style.bottom = i * 45 + 30 - 10 + "px";
+    div.style.left = screen.width / 6 - (n - i) * 30 + 2.5 + "px";
+    div.style.zIndex = "2";
+    return div
+}
+
 
 
 

@@ -3,13 +3,13 @@ const webpack = require("webpack");
 
 module.exports = {
     mode: "development",
-    entry: "./threejs/src/main.ts",
+    entry: "./2d/click-to-select/src/main.ts",
     module: {
         rules: [
             {
                 test: /.ts?$/,
                 use: "ts-loader",
-                include: [path.resolve(__dirname, "threejs/src")],
+                include: [path.resolve(__dirname, "2d/click-to-select/src")],
             },
         ],
     },
@@ -17,9 +17,9 @@ module.exports = {
         extensions: [".ts", ".js"],
     },
     output: {
-        publicPath: "threejs/public",
+        publicPath: "2d/click-to-select/public",
         filename: "main.js",
-        path: path.resolve(__dirname, "threejs/public/js"),
+        path: path.resolve(__dirname, "2d/click-to-select/public/js"),
     },
     plugins: [
         new webpack.DefinePlugin({
