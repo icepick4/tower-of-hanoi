@@ -42,13 +42,9 @@
     },
     "devDependencies": {
         "@types/three": "^0.140.0",
-        "@typescript-eslint/eslint-plugin": "^5.27.1",
-        "@typescript-eslint/parser": "^5.27.1",
+        "@typescript-eslint/eslint-plugin": "^5.27.0",
+        "@typescript-eslint/parser": "^5.27.0",
         "eslint": "^8.17.0",
-        "eslint-config-standard": "^17.0.0",
-        "eslint-plugin-import": "^2.26.0",
-        "eslint-plugin-n": "^15.2.1",
-        "eslint-plugin-promise": "^6.0.0",
         "webpack": "^5.72.1",
         "webpack-cli": "^4.9.2"
     }
