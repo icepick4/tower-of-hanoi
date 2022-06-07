@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
     INPUT,
     WON,
@@ -197,7 +198,7 @@ function initDiv(div: HTMLElement, n: number, i: number, str: string) {
     div.style.bottom = i * 45 + 30 - 10 + "px";
     div.style.left = screen.width / 6 - (n - i) * 30 + 2.5 + "px";
     div.style.zIndex = "2";
-    return div
+    return div;
 }
 
 
