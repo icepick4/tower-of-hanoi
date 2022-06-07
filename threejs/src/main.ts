@@ -251,7 +251,7 @@ function initDisks(n: number) {
         const r = Math.floor(Math.random() * 255);
         const g = Math.floor(Math.random() * 255);
         const b = Math.floor(Math.random() * 255);
-        const rgb = "rgb(" + r + "," + g + "," + b + ")";
+        const rgb = "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
         const radius = n - i + 0.5;
         const disk = new Disk(
             new THREE.CylinderGeometry(

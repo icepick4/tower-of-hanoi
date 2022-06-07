@@ -47,7 +47,7 @@ function mouseOut(this: HTMLElement) {
 window.addEventListener("resize", function () {
     hanoi.draw();
     for (let i = 0; i < TOWERS.length; i++) {
-        TOWERS[i].style.width = (document.body.clientWidth / 50) + "px";
+        TOWERS[i].style.width = (document.body.clientWidth / 50).toString() + "px";
     }
 });
 
@@ -149,31 +149,31 @@ class Hanoi {
                     "disk_" + this.towers[i][j].toString()
                 ) as HTMLElement;
                 div.style.bottom =
-                    (j * document.body.clientWidth) / 33.333 + 30 - 10 + "px";
+                    ((j * document.body.clientWidth) / 33.333 + 30 - 10).toString() + "px";
                 div.style.width =
-                    (document.body.clientWidth * this.towers[i][j]) / 25 +
-                    10 +
+                    ((document.body.clientWidth * this.towers[i][j]) / 25 +
+                        10).toString() +
                     "px";
-                div.style.height = document.body.clientWidth / 33.333 + "px";
+                div.style.height = (document.body.clientWidth / 33.333).toString() + "px";
                 if (i == 0) {
                     div.style.left =
-                        document.body.clientWidth / 6 -
-                        div.offsetWidth / 2 +
-                        TOWERS[0].offsetWidth / 2 +
+                        (document.body.clientWidth / 6 -
+                            div.offsetWidth / 2 +
+                            TOWERS[0].offsetWidth / 2).toString() +
                         "px";
                 }
                 else if (i == 1) {
                     div.style.left =
-                        document.body.clientWidth / 2 -
-                        div.offsetWidth / 2 +
-                        TOWERS[1].offsetWidth / 2 +
+                        (document.body.clientWidth / 2 -
+                            div.offsetWidth / 2 +
+                            TOWERS[1].offsetWidth / 2).toString() +
                         "px";
                 }
                 else {
                     div.style.left =
-                        document.body.clientWidth / 1.25 -
-                        div.offsetWidth / 2 +
-                        TOWERS[2].offsetWidth / 2 +
+                        (document.body.clientWidth / 1.25 -
+                            div.offsetWidth / 2 +
+                            TOWERS[2].offsetWidth / 2).toString() +
                         "px";
                 }
             }
@@ -187,16 +187,18 @@ function initDiv(div: HTMLElement, n: number, i: number, str: string) {
     const r = Math.floor(Math.random() * 255);
     const g = Math.floor(Math.random() * 255);
     const b = Math.floor(Math.random() * 255);
-    div.style.backgroundColor = "rgb(" + r + ", " + g + ", " + b + ")";
+    div.style.backgroundColor = "rgb(" + r.toString() + ", " + g.toString() + ", " + b.toString() + ")";
     div.style.border = "1px solid black";
 
     div.style.width =
-        (document.body.clientWidth * (n - 1)) / 25 + 10 + "px";
-    div.style.height = document.body.clientWidth / 33.333 + "px";
+        ((document.body.clientWidth * (n - 1)) / 25 + 10).toString() + "px";
+    div.style.height = (document.body.clientWidth / 33.333).toString() + "px";
     div.style.position = "absolute";
+    div.draggable = true;
+    div.style.cursor = "move";
 
-    div.style.bottom = i * 45 + 30 - 10 + "px";
-    div.style.left = screen.width / 6 - (n - i) * 30 + 2.5 + "px";
+    div.style.bottom = (i * 45 + 30 - 10).toString() + "px";
+    div.style.left = (screen.width / 6 - (n - i) * 30 + 2.5).toString() + "px";
     div.style.zIndex = "2";
     return div;
 }

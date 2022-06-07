@@ -20,9 +20,9 @@ const TOWER_AREA2: HTMLElement = document.getElementById(
 ) as HTMLElement;
 export const TOWERS_AREAS: HTMLElement[] = [TOWER_AREA0, TOWER_AREA1, TOWER_AREA2];
 
-TOWER_AREA0.style.width = document.body.clientWidth / 50 + "px";
-TOWER_AREA1.style.width = document.body.clientWidth / 50 + "px";
-TOWER_AREA2.style.width = document.body.clientWidth / 50 + "px";
+TOWER_AREA0.style.width = (document.body.clientWidth / 50).toString() + "px";
+TOWER_AREA1.style.width = (document.body.clientWidth / 50).toString() + "px";
+TOWER_AREA2.style.width = (document.body.clientWidth / 50).toString() + "px";
 
 const DROP_AREA0: HTMLElement = document.getElementById("DROP_AREA0") as HTMLElement;
 const DROP_AREA1: HTMLElement = document.getElementById("DROP_AREA1") as HTMLElement;
