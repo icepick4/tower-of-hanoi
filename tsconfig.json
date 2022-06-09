@@ -91,6 +91,6 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "exclude": [
-        "./2d"
+        "./2d/drag-to-select", "./threejs"
     ]
 }

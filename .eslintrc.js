@@ -14,13 +14,9 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
     ],
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
         "semi": [
             "error",
             "always"

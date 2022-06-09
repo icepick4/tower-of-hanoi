@@ -20,7 +20,7 @@ for (let i = 0; i < TOWERS.length; i++) {
 function clickTower(this: HTMLElement, ev: MouseEvent) {
     //get bg of pic1
     const bg = this.style.backgroundColor;
-    const pic = Number((ev.target as HTMLElement).id.substring(3)) - 1;
+    const pic = Number((ev.target as HTMLElement).id.substring(9));
 
     if (bg == "blue") {
         this.style.backgroundColor = "black";

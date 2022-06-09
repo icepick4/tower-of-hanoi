@@ -2,7 +2,7 @@ input {
     position: absolute;
     top: 0;
     left: 0;
-    /*transparent background*/
+    /* transparent background */
     background: rgba(0, 0, 0, 0);
 }
 
@@ -10,6 +10,7 @@ input {
     position: absolute;
     top: 0;
     left: 55px;
+    display: none;
 }
 
 #cancel {
@@ -48,7 +49,7 @@ body {
 #title{
     position: absolute;
     color: black;
-    /*center in x axis*/
+    /* center in x axis */
     left: 50%;
     transform: translateX(-50%);
     font-size: 20px;

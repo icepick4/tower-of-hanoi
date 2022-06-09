@@ -1,103 +1,102 @@
 #pic-area-0 {
-    position: absolute;
-    bottom: 20px;
-    left: 16.6667%;
-    width: 30px;
-    height: 350px;
-    z-index: 1;
-    background-color: black;
+  position: absolute;
+  bottom: 20px;
+  left: 16.6667%;
+  width: 30px;
+  height: 350px;
+  z-index: 1;
+  background-color: black;
 }
 
 #pic-area-1 {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    width: 30px;
-    height: 350px;
-    z-index: 1;
-    background-color: black;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  width: 30px;
+  height: 350px;
+  z-index: 1;
+  background-color: black;
 }
 
 #pic-area-2 {
-    position: absolute;
-    bottom: 20px;
-    left: 80%;
-    width: 30px;
-    height: 350px;
-    z-index: 1;
-    background-color: black;
+  position: absolute;
+  bottom: 20px;
+  left: 80%;
+  width: 30px;
+  height: 350px;
+  z-index: 1;
+  background-color: black;
 }
 
 #base {
-    /*put it right below canvas*/
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    /*make the canvas full screen*/
-    width: 100%;
-    height: 20px;
-    background-color: black;
+  /* put it right below canvas */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  /* make the canvas full screen */
+  width: 100%;
+  height: 20px;
+  background-color: black;
 }
 
 #buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-
 #DROP_AREA0 {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 33%;
-    height: 65%;
-    opacity: 0;
-    z-index: 1;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 33%;
+  height: 65%;
+  opacity: 0;
+  z-index: 1;
 }
 
 #DROP_AREA1 {
-    position: absolute;
-    bottom: 0;
-    left: 33%;
-    width: 33%;
-    height: 65%;
-    opacity: 0;
-    z-index: 1;
+  position: absolute;
+  bottom: 0;
+  left: 33%;
+  width: 33%;
+  height: 65%;
+  opacity: 0;
+  z-index: 1;
 }
 
 #DROP_AREA2 {
-    position: absolute;
-    bottom: 0;
-    left: 66%;
-    width: 33%;
-    height: 65%;
-    opacity: 0;
-    z-index: 1;
+  position: absolute;
+  bottom: 0;
+  left: 66%;
+  width: 33%;
+  height: 65%;
+  opacity: 0;
+  z-index: 1;
 }
 
 .over-underline:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .grey {
-    color: grey;
+  color: grey;
 }
 
 body {
-    /*no scroll*/
-    overflow: hidden;
+  /* no scroll */
+  overflow: hidden;
 }
 
-#won{
-    display: none;
+#won {
+  display: none;
 }
 
-#title{
-    position: absolute;
-    color: black;
-    /*center in x axis*/
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 20px;
+#title {
+  position: absolute;
+  color: black;
+  /* center in x axis */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
 }

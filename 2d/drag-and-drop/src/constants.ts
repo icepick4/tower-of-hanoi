@@ -24,9 +24,9 @@ TOWER_AREA0.style.width = (document.body.clientWidth / 50).toString() + "px";
 TOWER_AREA1.style.width = (document.body.clientWidth / 50).toString() + "px";
 TOWER_AREA2.style.width = (document.body.clientWidth / 50).toString() + "px";
 
-const DROP_AREA0: HTMLElement = document.getElementById("DROP_AREA0") as HTMLElement;
-const DROP_AREA1: HTMLElement = document.getElementById("DROP_AREA1") as HTMLElement;
-const DROP_AREA2: HTMLElement = document.getElementById("DROP_AREA2") as HTMLElement;
+const DROP_AREA0: HTMLElement = document.getElementById("DROP-AREA-0") as HTMLElement;
+const DROP_AREA1: HTMLElement = document.getElementById("DROP-AREA-1") as HTMLElement;
+const DROP_AREA2: HTMLElement = document.getElementById("DROP-AREA-2") as HTMLElement;
 export const DROP_AREAS: HTMLElement[] = [DROP_AREA0, DROP_AREA1, DROP_AREA2];
 
 export const CANCEL: HTMLElement = document.getElementById("cancel") as HTMLElement;

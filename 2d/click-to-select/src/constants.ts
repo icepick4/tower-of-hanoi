@@ -1,6 +1,6 @@
-const TOWER1: HTMLElement = document.getElementById("pic1") as HTMLElement;
-const TOWER2: HTMLElement = document.getElementById("pic2") as HTMLElement;
-const TOWER3: HTMLElement = document.getElementById("pic3") as HTMLElement;
+const TOWER1: HTMLElement = document.getElementById("pic-area-0") as HTMLElement;
+const TOWER2: HTMLElement = document.getElementById("pic-area-1") as HTMLElement;
+const TOWER3: HTMLElement = document.getElementById("pic-area-2") as HTMLElement;
 export const TOWERS = [TOWER1, TOWER2, TOWER3];
 
 export const INPUT = document.querySelector("input");

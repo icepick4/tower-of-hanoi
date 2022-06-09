@@ -33,6 +33,7 @@ let disks = new Array<Disk>();
 const towers = new Array<Tower>();
 
 BTN_PLAY.addEventListener("click", () => {
+    WON.style.display = "block";
     //reset the game
     HANOI.reset();
     resetGamePlay();
