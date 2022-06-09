@@ -7,5 +7,4 @@ export const INPUT = document.querySelector("input");
 export const WON: HTMLElement = document.getElementById("won") as HTMLElement;
 export const BTN_PLAY: HTMLElement = document.getElementById("play") as HTMLElement;
 export const CONTAINER_DISKS: HTMLElement = document.getElementById("disks") as HTMLElement;
-
-
+export const CANCEL: HTMLElement = document.getElementById("cancel") as HTMLElement;

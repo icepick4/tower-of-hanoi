@@ -6,10 +6,16 @@ input {
     background: rgba(0, 0, 0, 0);
 }
 
-button {
+#play {
     position: absolute;
     top: 0;
     left: 55px;
+}
+
+#cancel {
+    position: absolute;
+    top: 60px;
+    left: 0;
 }
 
 h2 {
@@ -28,9 +34,22 @@ a {
     text-decoration: underline;
 }
 
+.grey {
+    color: grey;
+}
+
 body {
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+#title{
+    position: absolute;
+    color: black;
+    /*center in x axis*/
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
 }

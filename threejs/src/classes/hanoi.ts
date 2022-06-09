@@ -1,11 +1,12 @@
 import { Disk } from "./disk";
-import { WON } from "../constants";
+import { CANCEL, WON } from "../constants";
 
 export class Hanoi {
     n: number;
     towers: Array<Array<Disk>>;
     moves: number;
     solved: boolean;
+    lastsMoves: Array<Array<number>>;
     constructor() {
         this.towers = [];
         for (let i = 0; i < 3; i++) {
@@ -15,6 +16,7 @@ export class Hanoi {
         this.moves = 0;
         this.solved = false;
         this.n = 0;
+        this.lastsMoves = [];
     }
 
     canMove(from: number, to: number) {
@@ -30,15 +32,38 @@ export class Hanoi {
         }
     }
 
-    move(from: number, to: number) {
+    cancelLastMove() {
+        if (this.lastsMoves.length > 0) {
+            const lastMove = this.lastsMoves.pop();
+            if (lastMove != null) {
+                this.move(lastMove[1], lastMove[0], true);
+            }
+        }
+        console.log("je cancel");
+        CANCEL.classList.remove("over-underline");
+        CANCEL.classList.add("grey");
+    }
+
+    move(from: number, to: number, revert: boolean) {
+        console.log("from : " + from + " to : " + to);
         const disk = this.towers[from].pop() as Disk;
         this.towers[to].push(disk);
-        this.moves++;
-        WON.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
             WON.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
+        if (!revert) {
+            this.lastsMoves.push([from, to]);
+            if (this.lastsMoves.length > 1) {
+                this.lastsMoves.shift();
+            }
+            if (this.lastsMoves.length > 0) {
+                CANCEL.classList.add("over-underline");
+                CANCEL.classList.remove("grey");
+            }
+            this.moves++;
+        }
+        WON.innerHTML = "Moves : " + this.moves.toString();
     }
 
     init(disks: Array<Disk>) {
@@ -57,5 +82,6 @@ export class Hanoi {
         this.moves = 0;
         this.solved = false;
         this.n = 0;
+        this.lastsMoves = [];
     }
 }

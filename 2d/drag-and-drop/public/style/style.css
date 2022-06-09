@@ -42,6 +42,7 @@
 #buttons {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 }
 
 
@@ -79,7 +80,24 @@
     text-decoration: underline;
 }
 
+.grey {
+    color: grey;
+}
+
 body {
     /*no scroll*/
     overflow: hidden;
+}
+
+#won{
+    display: none;
+}
+
+#title{
+    position: absolute;
+    color: black;
+    /*center in x axis*/
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
 }

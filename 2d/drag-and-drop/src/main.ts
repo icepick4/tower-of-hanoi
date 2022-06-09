@@ -5,7 +5,8 @@ import {
     TOWERS_AREAS,
     INPUT,
     WON,
-    DROP_AREAS
+    DROP_AREAS,
+    CANCEL
 } from "./constants";
 
 let startDragCol: number;
@@ -13,7 +14,7 @@ let startDragDisk: number;
 let hanoi: Hanoi;
 
 BTN_PLAY.addEventListener("click", play);
-
+CANCEL.addEventListener("click", cancelLastMove);
 //event listener on resize window
 window.addEventListener("resize", function () {
     if (hanoi != null) {
@@ -101,10 +102,20 @@ function move(col: number) {
         hanoi.towers[startDragCol][hanoi.towers[startDragCol].length - 1] ==
         startDragDisk;
     if (hanoi.can_move(startDragCol, col) && diskAtTop) {
-        hanoi.move(startDragCol, col);
+        hanoi.move(startDragCol, col, false);
         hanoi.draw();
     }
 }
+
+function cancelLastMove() {
+    if (hanoi.moves > 0 && hanoi.lastsMoves.length > 0) {
+        console.log("cancel");
+        hanoi.moves--;
+        hanoi.cancelLastMove();
+        hanoi.draw();
+    }
+}
+
 
 function removeDiskFromPic(pic: HTMLElement) {
     const disk: HTMLElement = pic.lastChild as HTMLElement;
@@ -113,6 +124,7 @@ function removeDiskFromPic(pic: HTMLElement) {
 }
 
 function play() {
+    WON.style.display = "block";
     //clear divs
     for (let i = 0; i < TOWERS.length; i++) {
         TOWERS[i].innerHTML = "";
@@ -133,6 +145,7 @@ class Hanoi {
     towers: Array<Array<number>>;
     moves: number;
     solved: boolean;
+    lastsMoves: Array<Array<number>>;
     constructor(n: number) {
         this.n = n;
         this.towers = [];
@@ -150,6 +163,7 @@ class Hanoi {
         }
         this.moves = 0;
         this.solved = false;
+        this.lastsMoves = [];
     }
 
     can_move(from: number, to: number) {
@@ -165,20 +179,42 @@ class Hanoi {
         }
     }
 
-    move(from: number, to: number) {
+    cancelLastMove() {
+        if (this.lastsMoves.length > 0) {
+            const lastMove = this.lastsMoves.pop();
+            if (lastMove != null) {
+                this.move(lastMove[1], lastMove[0], true);
+            }
+        }
+        this.draw();
+        CANCEL.classList.remove("over-underline");
+        CANCEL.classList.add("grey");
+    }
+
+    move(from: number, to: number, revert: boolean) {
         //remove the last child in the pic number from
         const lastChild: HTMLElement = removeDiskFromPic(TOWERS[from]);
         TOWERS[to].appendChild(lastChild);
 
         this.towers[to].push(this.towers[from].pop() as number);
 
-        this.moves++;
-        WON.innerHTML = "Moves : " + this.moves.toString();
         if (this.towers[2].length == this.n) {
             this.solved = true;
             //display #won
             WON.innerHTML = "You won in " + this.moves.toString() + " moves!";
         }
+        if (!revert) {
+            this.lastsMoves.push([from, to]);
+            if (this.lastsMoves.length > 1) {
+                this.lastsMoves.shift();
+            }
+            if (this.lastsMoves.length > 0) {
+                CANCEL.classList.add("over-underline");
+                CANCEL.classList.remove("grey");
+            }
+            this.moves++;
+        }
+        WON.innerHTML = "Moves : " + this.moves.toString();
     }
 
     draw() {

@@ -13,6 +13,7 @@ import {
     GEOMETRY_TOWER,
     MATERIAL_TOWER,
     HANOI,
+    CANCEL
 } from "./constants";
 
 let selectedDisk: Disk | null;
@@ -42,6 +43,7 @@ BTN_PLAY.addEventListener("click", () => {
         }
     }
 });
+CANCEL.addEventListener("click", cancelLastMove);
 
 init();
 render();
@@ -52,7 +54,7 @@ function render() {
     if (movingTop && selectedDisk != null) {
         moveTop(selectedDisk);
     }
-    if (movingCol != null && selectedDisk != null) {
+    else if (movingCol != null && selectedDisk != null) {
         moveCol(selectedDisk, movingCol);
     }
     renderer.render(scene, camera);
@@ -83,6 +85,7 @@ function raycasting(click: boolean) {
                 diskAtTop =
                     HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1] ==
                     disk;
+                // console.log(HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1].col);
                 if (
                     click &&
                     diskAtTop &&
@@ -180,7 +183,8 @@ function moveCol(disk: Disk, tower: Tower) {
     }
 
     const distanceY = lenCol * disk.height - disk.height / 2;
-
+    // console.log({ distanceY });
+    // console.log({ lenCol });
     if (tower.index == 0) {
         if (
             disk.mesh.position.x < TOWER_GAP &&
@@ -198,7 +202,7 @@ function moveCol(disk: Disk, tower: Tower) {
                 disk.mesh.position.y = distanceY;
                 movingCol = null;
                 if (selectedDisk != null && canPlace) {
-                    HANOI.move(selectedDisk.col, tower.index);
+                    HANOI.move(selectedDisk.col, tower.index, false);
                     disk.col = tower.index;
                 }
                 selectedDisk = null;
@@ -214,7 +218,7 @@ function moveCol(disk: Disk, tower: Tower) {
             disk.mesh.position.y = distanceY;
             movingCol = null;
             if (selectedDisk != null && canPlace) {
-                HANOI.move(selectedDisk.col, tower.index);
+                HANOI.move(selectedDisk.col, tower.index, false);
                 disk.col = tower.index;
             }
 
@@ -237,12 +241,37 @@ function moveCol(disk: Disk, tower: Tower) {
                 disk.mesh.position.y = distanceY;
                 movingCol = null;
                 if (selectedDisk != null && canPlace) {
-                    HANOI.move(selectedDisk.col, tower.index);
+                    HANOI.move(selectedDisk.col, tower.index, false);
                     disk.col = tower.index;
                 }
                 selectedDisk = null;
             }
         }
+    }
+}
+
+function cancelLastMove() {
+    if (HANOI.moves > 0 && HANOI.lastsMoves.length > 0) {
+        HANOI.moves--;
+        const cols = HANOI.lastsMoves[HANOI.lastsMoves.length - 1];
+        if (cols != null) {
+            for (const disk of disks) {
+                if (disk.col == cols[1]) {
+                    if (selectedDisk == null) {
+                        selectedDisk = disk;
+                        disk.col = cols[0];
+                    }
+                    else if (disk.index > selectedDisk.index) {
+                        selectedDisk = disk;
+                        disk.col = cols[0];
+                    }
+                }
+            }
+            movingTop = true;
+            canPlace = false;
+            movingCol = towers[cols[0]];
+        }
+        HANOI.cancelLastMove();
     }
 }
 

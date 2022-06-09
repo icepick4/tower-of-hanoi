@@ -4,10 +4,12 @@ import {
     WON,
     BTN_PLAY,
     CONTAINER_DISKS,
-    TOWERS
+    TOWERS,
+    CANCEL,
 } from "./constants";
-
+let PLAYING = false;
 BTN_PLAY.addEventListener("click", play);
+CANCEL.addEventListener("click", cancelLastMove);
 
 for (let i = 0; i < TOWERS.length; i++) {
     TOWERS[i].addEventListener("click", clickTower);
@@ -31,7 +33,7 @@ function clickTower(this: HTMLElement, ev: MouseEvent) {
 
 function mouseHover(this: HTMLElement) {
     const bg = this.style.backgroundColor;
-    if (bg != "blue") {
+    if (bg != "blue" && PLAYING) {
         this.style.backgroundColor = "red";
     }
 }
@@ -60,12 +62,22 @@ function move(col: number) {
     else {
         unselectAll();
         if (hanoi.can_move(hanoi.clicked1, col)) {
-            hanoi.move(hanoi.clicked1, col);
+            hanoi.move(hanoi.clicked1, col, false);
             hanoi.draw();
         }
         hanoi.clicked1 = null;
     }
 }
+
+function cancelLastMove() {
+    if (hanoi.moves > 0 && hanoi.lastsMoves.length > 0) {
+        console.log("cancel");
+        hanoi.moves--;
+        hanoi.cancelLastMove();
+        hanoi.draw();
+    }
+}
+
 
 function unselectAll() {
     for (let i = 0; i < TOWERS.length; i++) {
@@ -74,6 +86,8 @@ function unselectAll() {
 }
 
 function play() {
+    WON.style.display = "block";
+    PLAYING = true;
     //clear div with id "disks"
     CONTAINER_DISKS.innerHTML = "";
     unselectAll();
@@ -93,6 +107,7 @@ class Hanoi {
     towers: Array<Array<number>>;
     moves: number;
     solved: boolean;
+    lastsMoves: Array<Array<number>>;
     constructor(n: number) {
         this.n = n;
         this.towers = [];
@@ -112,10 +127,23 @@ class Hanoi {
         this.moves = 0;
         this.solved = false;
         this.clicked1 = null;
+        this.lastsMoves = [];
     }
 
     setClicked(i: number) {
         this.clicked1 = i;
+    }
+
+    cancelLastMove() {
+        if (this.lastsMoves.length > 0) {
+            const lastMove = this.lastsMoves.pop();
+            if (lastMove != null) {
+                this.move(lastMove[1], lastMove[0], true);
+            }
+        }
+        this.draw();
+        CANCEL.classList.remove("over-underline");
+        CANCEL.classList.add("grey");
     }
 
     can_move(from: number, to: number) {
@@ -130,7 +158,7 @@ class Hanoi {
         }
     }
 
-    move(from: number, to: number) {
+    move(from: number, to: number, revert: boolean) {
         this.towers[to].push(this.towers[from].pop() as number);
         this.moves++;
         WON.innerHTML = "Moves : " + this.moves.toString();
@@ -138,6 +166,16 @@ class Hanoi {
             this.solved = true;
             //display #won 
             WON.innerHTML = "You won in " + this.moves.toString() + " moves!";
+        }
+        if (!revert) {
+            this.lastsMoves.push([from, to]);
+            if (this.lastsMoves.length > 1) {
+                this.lastsMoves.shift();
+            }
+            if (this.lastsMoves.length > 0) {
+                CANCEL.classList.add("over-underline");
+                CANCEL.classList.remove("grey");
+            }
         }
     }
 
@@ -194,8 +232,6 @@ function initDiv(div: HTMLElement, n: number, i: number, str: string) {
         ((document.body.clientWidth * (n - 1)) / 25 + 10).toString() + "px";
     div.style.height = (document.body.clientWidth / 33.333).toString() + "px";
     div.style.position = "absolute";
-    div.draggable = true;
-    div.style.cursor = "move";
 
     div.style.bottom = (i * 45 + 30 - 10).toString() + "px";
     div.style.left = (screen.width / 6 - (n - i) * 30 + 2.5).toString() + "px";
