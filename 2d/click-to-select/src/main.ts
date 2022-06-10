@@ -17,6 +17,27 @@ for (let i = 0; i < TOWERS.length; i++) {
     TOWERS[i].addEventListener('mouseout', mouseOut);
 }
 
+/**
+ * "If the background color of the clicked element is blue, change it to black, otherwise change it to
+ * blue."
+ * 
+ * The first line of the function is a TypeScript annotation. It tells TypeScript that the function
+ * will be called with a `this` argument that is an `HTMLElement` and an `ev` argument that is a
+ * `MouseEvent`. This is important because TypeScript will check that the function is called with the
+ * correct arguments.
+ * 
+ * The second line of the function gets the background color of the clicked element.
+ * 
+ * The third line gets the number of the picture that was clicked.
+ * 
+ * The fourth line checks the background color of the clicked element. If it is blue, the background
+ * color is changed to black. Otherwise, the background color is changed to blue.
+ * 
+ * The fifth line calls the `move` function.
+ * @param {HTMLElement}  - HTMLElement - this is the type of the first parameter, which is the element
+ * that was clicked.
+ * @param {MouseEvent} ev - MouseEvent - this is the event object that is passed to the function.
+ */
 function clickTower(this: HTMLElement, ev: MouseEvent) {
     // get bg of pic1
     const bg = this.style.backgroundColor;
@@ -52,6 +73,11 @@ window.addEventListener('resize', function () {
     }
 });
 
+/**
+ * If the user has clicked on a column, then move the top disk from that column to the column they just
+ * clicked on
+ * @param {number} col - The column that was clicked.
+ */
 function move(col: number) {
     if (hanoi.clicked1 == null) {
         hanoi.setClicked(col);
@@ -65,6 +91,9 @@ function move(col: number) {
     }
 }
 
+/**
+ * If there are moves to cancel and there are moves to cancel, cancel the last move.
+ */
 function cancelLastMove() {
     if (hanoi.moves > 0 && hanoi.lastsMoves.length > 0) {
         console.log('cancel');
@@ -80,6 +109,28 @@ function unselectAll() {
     }
 }
 
+/**
+ * The function play() is called when the user clicks the "Play" button. 
+ * 
+ * The function play() does the following: 
+ * 
+ * 1. It sets the display property of the div with id "won" to "block". 
+ * 
+ * 2. It sets the variable PLAYING to true. 
+ * 
+ * 3. It clears the div with id "disks". 
+ * 
+ * 4. It calls the function unselectAll(). 
+ * 
+ * 5. It sets the innerHTML of the div with id "won" to "Moves : 0". 
+ * 
+ * 6. It checks if the variable INPUT is not null. 
+ * 
+ * 7. If the variable INPUT is not null, it gets the value of the input element with id "input" and
+ * converts it to a number. 
+ * 
+ * 8. Then the game is started with the number of disks in the input element.
+ */
 function play() {
     WON.style.display = 'block';
     PLAYING = true;
@@ -96,6 +147,9 @@ function play() {
     }
 }
 
+/* The Hanoi class is a class that represents a game of Towers of Hanoi. It has a constructor that
+takes a number of disks as an argument, and it has a method called draw that draws the disks on the
+screen. */
 class Hanoi {
     n: number;
     clicked1: number | null;

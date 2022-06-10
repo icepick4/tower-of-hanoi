@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { TOWER_GAP } from '../constants';
 
+/* The Tower class is a class that creates a tower object with a geometry, material, and mesh, and has
+a position that depends on the index. */
 export class Tower {
     geometry: THREE.CylinderGeometry;
     material: THREE.MeshPhongMaterial;

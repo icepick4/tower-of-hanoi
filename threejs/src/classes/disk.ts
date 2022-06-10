@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { TOWER_GAP } from '../constants';
 
+/* The Disk class is a class that creates a disk object that has a geometry, material, mesh, color,
+col, index, selected, and height property. */
 export class Disk {
     geometry: THREE.CylinderGeometry;
     material: THREE.MeshPhongMaterial;

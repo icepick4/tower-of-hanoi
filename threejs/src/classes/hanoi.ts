@@ -1,6 +1,8 @@
 import { Disk } from './disk';
 import { CANCEL, WON } from '../constants';
 
+/* It's a class that represents a game of Hanoi, with a few methods to move disks, check if a move is
+valid, and reset the game. */
 export class Hanoi {
     n: number;
     towers: Array<Array<Disk>>;
@@ -39,13 +41,11 @@ export class Hanoi {
                 this.move(lastMove[1], lastMove[0], true);
             }
         }
-        console.log('je cancel');
         CANCEL.classList.remove('over-underline');
         CANCEL.classList.add('grey');
     }
 
     move(from: number, to: number, revert: boolean) {
-        console.log('from : ' + from + ' to : ' + to);
         const disk = this.towers[from].pop() as Disk;
         this.towers[to].push(disk);
         if (this.towers[2].length === this.n) {

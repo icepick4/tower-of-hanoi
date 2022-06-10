@@ -31,6 +31,9 @@ window.addEventListener('click', function () {
     }
 });
 
+/**
+ * This function adds event listeners to the first tower's children and the drop areas.
+ */
 function setEvents() {
     for (let i = 0; i < TOWERS[0].children.length; i++) {
         TOWERS[0].children[i].addEventListener('dragstart', handleDragStart);
@@ -42,6 +45,24 @@ function setEvents() {
     }
 }
 
+/**
+ * "If the user is dragging a disk, and the mouse is over a tower, and the disk is at the top of the
+ * tower, and the disk can be moved to the tower, then highlight the tower."
+ * 
+ * The function is called whenever the mouse moves. 
+ * 
+ * The first thing it does is check if the user is dragging a disk. If not, it returns. 
+ * 
+ * The next thing it does is get the tower the mouse is over. If the mouse is not over a tower, it
+ * returns. 
+ * 
+ * The next thing it does is check if the disk is at the top of the tower. If not, it returns. 
+ * 
+ * The next thing it does is check if the disk can be moved to the tower. If not, it returns. 
+ * 
+ * If the user is dragging a disk, and the mouse is over a tower, and the disk is
+ * @param {DragEvent} ev - DragEvent - the event that is being handled
+ */
 function allowDrop(ev: DragEvent) {
     ev.preventDefault();
     const diskAtTop =
@@ -63,6 +84,18 @@ function allowDrop(ev: DragEvent) {
     }
 }
 
+/**
+ * The function drop() is called when the user drops a disk on a tower. 
+ * 
+ * The function first prevents the default action of the browser from happening. 
+ * 
+ * Then it gets the id of the tower where the disk was dropped. 
+ * 
+ * Then it calls the move() function to move the disk to the tower. 
+ * 
+ * Finally, it changes the background color of the towers back to black.
+ * @param {DragEvent} ev - DragEvent - the event that is triggered when the user drags the element.
+ */
 function drop(ev: DragEvent) {
     ev.preventDefault();
     // get the id of the pic where we drop
@@ -76,6 +109,24 @@ function drop(ev: DragEvent) {
     }
 }
 
+/**
+ * "When a disk is clicked, set the opacity to 0.75, set the border to dashed, and set the startDragCol
+ * and startDragDisk variables to the column and disk that was clicked."
+ * 
+ * The first line of the function is a TypeScript annotation. It tells TypeScript that the this
+ * parameter is of type HTMLElement. This is necessary because the this parameter is not a parameter of
+ * the function, but rather a parameter of the addEventListener function.
+ * 
+ * The next line sets the opacity of the disk to 0.75. This is done so that the user can see which disk
+ * is being dragged.
+ * 
+ * The next line sets the border of the disk to dashed. This is done so that the user can see which
+ * disk is being dragged.
+ * 
+ * The next line gets the disk number from the id of the disk. The id of the disk is in the form
+ * "disk1", "
+ * @param {HTMLElement}  - this: HTMLElement - this is the element that is being dragged.
+ */
 function handleDragStart(this: HTMLElement) {
     this.style.opacity = '0.75';
     this.style.border = '1px dashed #000';
@@ -91,11 +142,20 @@ function handleDragStart(this: HTMLElement) {
     }
 }
 
+/**
+ * The function `handleDragEnd` takes a parameter `this` of type `HTMLElement` and returns nothing
+ * @param {HTMLElement}  - The element that is being dragged.
+ */
 function handleDragEnd(this: HTMLElement) {
     this.style.opacity = '1';
     this.style.border = '1px solid #000';
 }
 
+/**
+ * If the user is dragging a disk and the disk is at the top of the tower, then move the disk to the
+ * new tower
+ * @param {number} col - The column to move the disk to.
+ */
 function move(col: number) {
     const diskAtTop =
         hanoi.towers[startDragCol][hanoi.towers[startDragCol].length - 1] ===
@@ -106,6 +166,9 @@ function move(col: number) {
     }
 }
 
+/**
+ * If there are moves to cancel and there are moves to cancel, cancel the last move.
+ */
 function cancelLastMove() {
     if (hanoi.moves > 0 && hanoi.lastsMoves.length > 0) {
         console.log('cancel');
@@ -115,12 +178,20 @@ function cancelLastMove() {
     }
 }
 
+/**
+ * `removeDiskFromPic` removes the last child of the given `pic` and returns it
+ * @param {HTMLElement} pic - The picture element that the disk is being removed from.
+ * @returns The disk that was removed from the pic.
+ */
 function removeDiskFromPic(pic: HTMLElement) {
     const disk: HTMLElement = pic.lastChild as HTMLElement;
     pic.removeChild(disk);
     return disk;
 }
 
+/**
+ * It creates a new Hanoi object, and then calls the draw function on it.
+ */
 function play() {
     WON.style.display = 'block';
     // clear divs
@@ -138,6 +209,10 @@ function play() {
     setEvents();
 }
 
+/* The Hanoi class is a class that represents a Hanoi game. It has a constructor that takes a number of
+disks as a parameter and creates a Hanoi game with that number of disks. It also has a method called
+move that takes two numbers as parameters and moves the top disk from the first tower to the second
+tower. It also has a method called draw that draws the disks on the screen. */
 class Hanoi {
     n: number;
     towers: Array<Array<number>>;

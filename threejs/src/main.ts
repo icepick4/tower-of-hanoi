@@ -158,6 +158,11 @@ function raycasting(click: boolean) {
     }
 }
 
+/**
+ * If the disk is not at the top of the tower, move it up. If it is at the top of the tower, move it to
+ * the center.
+ * @param {Disk} disk - Disk - the disk that is being moved
+ */
 function moveTop(disk: Disk) {
     if (disk.mesh.position.y < TOWER_GAP) {
         disk.mesh.position.y += xSpeed;
@@ -176,6 +181,13 @@ function moveTop(disk: Disk) {
     }
 }
 
+/**
+ * "If the disk is not in the correct position, move it towards the correct position."
+ * The function is called every frame, and it checks if the disk is in the correct position. If it is
+ * not, it moves the disk towards the correct position.
+ * @param {Disk} disk - Disk - the disk that is being moved
+ * @param {Tower} tower - Tower - the tower that the disk is being moved to
+ */
 function moveCol(disk: Disk, tower: Tower) {
     let lenCol = HANOI.towers[tower.index].length;
     if (canPlace) {
@@ -250,6 +262,10 @@ function moveCol(disk: Disk, tower: Tower) {
     }
 }
 
+/**
+ * If there are moves to cancel, then cancel the last move by moving the top disk of the destination
+ * tower back to the source tower.
+ */
 function cancelLastMove() {
     if (HANOI.moves > 0 && HANOI.lastsMoves.length > 0) {
         HANOI.moves--;
@@ -274,6 +290,26 @@ function cancelLastMove() {
     }
 }
 
+/**
+ * `initDisks` creates a set of disks with random colors and adds them to the scene.
+ * 
+ * The function takes a single argument, `n`, which is the number of disks to create.
+ * 
+ * The first thing the function does is create a loop that runs `n` times.
+ * 
+ * On each iteration of the loop, the function creates a random color and uses it to create a new disk.
+ * 
+ * 
+ * The disk's radius is calculated by subtracting the current iteration number from `n` and adding
+ * `0.5`.
+ * 
+ * The disk's height is calculated by subtracting `DISK_GAP * n` from `MAX_DISK_HEIGHT`.
+ * 
+ * The disk is then added to the `disks` array and the scene.
+ * 
+ * Once the loop is finished, the `HANOI.init` function is called.
+ * @param {number} n - number of disks
+ */
 function initDisks(n: number) {
     for (let i = 0; i < n; i++) {
         const r = Math.floor(Math.random() * 255);
@@ -301,6 +337,9 @@ function initDisks(n: number) {
     HANOI.init(disks);
 }
 
+/**
+ * It removes all the disks from the scene, resets the game, and resets the UI.
+ */
 function resetGamePlay() {
     for (const disk of disks) {
         scene.remove(disk.mesh);
@@ -367,8 +406,8 @@ function init() {
     });
 
     const textureLoader = new THREE.TextureLoader();
-
-    textureLoader.load('/images/hardwood2_diffuse.jpg', function (map) {
+    console.log(__dirname);
+    textureLoader.load(__dirname + 'images/hardwood2_diffuse.jpg', function (map) {
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
@@ -377,7 +416,7 @@ function init() {
         floorMat.map = map;
         floorMat.needsUpdate = true;
     });
-    textureLoader.load('/images/hardwood2_bump.jpg', function (map) {
+    textureLoader.load(__dirname + 'images/hardwood2_bump.jpg', function (map) {
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
@@ -385,7 +424,7 @@ function init() {
         floorMat.bumpMap = map;
         floorMat.needsUpdate = true;
     });
-    textureLoader.load('/images/hardwood2_roughness.jpg', function (map) {
+    textureLoader.load(__dirname + 'images/hardwood2_roughness.jpg', function (map) {
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
