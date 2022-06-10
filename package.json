@@ -9,7 +9,7 @@
         "dev:start": "npm run build && npm run start",
         "start": "node ./server.js",
         "dev": "nodemon --watch ./ -e ts,json,js --exec npm run dev:start",
-        "lint:js": "eslint src/**/*.ts",
+        "lint:js": "eslint **/*.ts",
         "lint": "npm run lint:js"
     },
     "repository": {

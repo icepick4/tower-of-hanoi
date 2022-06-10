@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { TOWER_GAP } from "../constants";
+import * as THREE from 'three';
+import { TOWER_GAP } from '../constants';
 
 export class Tower {
     geometry: THREE.CylinderGeometry;
@@ -15,13 +15,13 @@ export class Tower {
         this.material = material;
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
-        this.mesh.name = "tower";
+        this.mesh.name = 'tower';
         this.index = index;
-        if (index == 0) {
+        if (index === 0) {
             this.mesh.position.set(TOWER_GAP, 5, 0);
-        } else if (index == 1) {
+        } else if (index === 1) {
             this.mesh.position.set(0, 5, 0);
-        } else if (index == 2) {
+        } else if (index === 2) {
             this.mesh.position.set(-TOWER_GAP, 5, 0);
         }
     }
