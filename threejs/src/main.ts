@@ -1,7 +1,7 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Tower } from "./classes/tower";
-import { Disk } from "./classes/disk";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { Tower } from './classes/tower';
+import { Disk } from './classes/disk';
 import {
     MAX_DISK_HEIGHT,
     TOWER_GAP,
@@ -14,7 +14,7 @@ import {
     MATERIAL_TOWER,
     HANOI,
     CANCEL
-} from "./constants";
+} from './constants';
 
 let selectedDisk: Disk | null;
 let movingTop = false;
@@ -29,12 +29,12 @@ let renderer: THREE.WebGLRenderer,
 
 const mouse = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
-let disks = new Array<Disk>();
-const towers = new Array<Tower>();
+let disks: Disk[] = [];
+const towers: Tower[] = [];
 
-BTN_PLAY.addEventListener("click", () => {
-    WON.style.display = "block";
-    //reset the game
+BTN_PLAY.addEventListener('click', () => {
+    WON.style.display = 'block';
+    // reset the game
     HANOI.reset();
     resetGamePlay();
     if (INPUT != null) {
@@ -44,7 +44,7 @@ BTN_PLAY.addEventListener("click", () => {
         }
     }
 });
-CANCEL.addEventListener("click", cancelLastMove);
+CANCEL.addEventListener('click', cancelLastMove);
 
 init();
 render();
@@ -54,8 +54,7 @@ function render() {
     raycasting(false);
     if (movingTop && selectedDisk != null) {
         moveTop(selectedDisk);
-    }
-    else if (movingCol != null && selectedDisk != null) {
+    } else if (movingCol != null && selectedDisk != null) {
         moveCol(selectedDisk, movingCol);
     }
     renderer.render(scene, camera);
@@ -77,14 +76,14 @@ function raycasting(click: boolean) {
     if (intersects.length > 0) {
         const mesh = intersects[0].object as THREE.Mesh;
         for (const disk of disks) {
-            if (disk.mesh != mesh && disk != selectedDisk) {
+            if (disk.mesh !== mesh && disk !== selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({
-                    color: disk.color,
+                    color: disk.color
                 });
             } else {
                 let diskAtTop = false;
                 diskAtTop =
-                    HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1] ==
+                    HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1] ===
                     disk;
                 // console.log(HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1].col);
                 if (
@@ -96,25 +95,25 @@ function raycasting(click: boolean) {
                     selectedDisk = disk;
                     movingTop = true;
                 }
-                //check is the disk is on the top of the tower with his index
+                // check is the disk is on the top of the tower with his index
                 if (diskAtTop) {
                     disk.mesh.material = new THREE.MeshPhongMaterial({
-                        color: "green",
+                        color: 'green'
                     });
                 } else {
                     disk.mesh.material = new THREE.MeshPhongMaterial({
-                        color: "rgb(65,65,65)",
+                        color: 'rgb(65,65,65)'
                     });
                 }
-                if (disk == selectedDisk) {
+                if (disk === selectedDisk) {
                     disk.mesh.material = new THREE.MeshPhongMaterial({
-                        color: disk.color,
+                        color: disk.color
                     });
                 }
             }
         }
         for (const tower of towers) {
-            if (tower.mesh != mesh) {
+            if (tower.mesh !== mesh) {
                 tower.mesh.material = MATERIAL_TOWER;
             } else {
                 if (
@@ -129,9 +128,9 @@ function raycasting(click: boolean) {
                         break;
                     } else {
                         canPlace = false;
-                        if (selectedDisk.col == 0) {
+                        if (selectedDisk.col === 0) {
                             movingCol = towers[0];
-                        } else if (selectedDisk.col == 1) {
+                        } else if (selectedDisk.col === 1) {
                             movingCol = towers[1];
                         } else {
                             movingCol = towers[2];
@@ -140,16 +139,16 @@ function raycasting(click: boolean) {
                 }
                 if (selectedDisk != null) {
                     tower.mesh.material = new THREE.MeshPhongMaterial({
-                        color: "rgb(160,160,160)",
+                        color: 'rgb(160,160,160)'
                     });
                 }
             }
         }
     } else {
         for (const disk of disks) {
-            if (disk != selectedDisk) {
+            if (disk !== selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({
-                    color: disk.color,
+                    color: disk.color
                 });
             }
         }
@@ -186,7 +185,7 @@ function moveCol(disk: Disk, tower: Tower) {
     const distanceY = lenCol * disk.height - disk.height / 2;
     // console.log({ distanceY });
     // console.log({ lenCol });
-    if (tower.index == 0) {
+    if (tower.index === 0) {
         if (
             disk.mesh.position.x < TOWER_GAP &&
             disk.mesh.position.x + xSpeed < TOWER_GAP
@@ -209,7 +208,7 @@ function moveCol(disk: Disk, tower: Tower) {
                 selectedDisk = null;
             }
         }
-    } else if (tower.index == 1) {
+    } else if (tower.index === 1) {
         if (
             disk.mesh.position.y > distanceY &&
             disk.mesh.position.y - xSpeed > distanceY
@@ -257,12 +256,11 @@ function cancelLastMove() {
         const cols = HANOI.lastsMoves[HANOI.lastsMoves.length - 1];
         if (cols != null) {
             for (const disk of disks) {
-                if (disk.col == cols[1]) {
+                if (disk.col === cols[1]) {
                     if (selectedDisk == null) {
                         selectedDisk = disk;
                         disk.col = cols[0];
-                    }
-                    else if (disk.index > selectedDisk.index) {
+                    } else if (disk.index > selectedDisk.index) {
                         selectedDisk = disk;
                         disk.col = cols[0];
                     }
@@ -281,7 +279,7 @@ function initDisks(n: number) {
         const r = Math.floor(Math.random() * 255);
         const g = Math.floor(Math.random() * 255);
         const b = Math.floor(Math.random() * 255);
-        const rgb = "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
+        const rgb = 'rgb(' + r.toString() + ',' + g.toString() + ',' + b.toString() + ')';
         const radius = n - i + 0.5;
         const disk = new Disk(
             new THREE.CylinderGeometry(
@@ -291,7 +289,7 @@ function initDisks(n: number) {
                 FACES
             ),
             new THREE.MeshPhongMaterial({
-                color: rgb,
+                color: rgb
             }),
             rgb,
             i,
@@ -313,7 +311,7 @@ function resetGamePlay() {
     movingCol = null;
     movingTop = false;
     canPlace = false;
-    WON.innerHTML = "Moves : 0";
+    WON.innerHTML = 'Moves : 0';
 }
 
 function init() {
@@ -325,15 +323,15 @@ function init() {
         1000
     );
 
-    //init a rectangle
+    // init a rectangle
     const base = new THREE.Mesh(
         new THREE.BoxGeometry(55, 0.5, 17.5),
-        new THREE.MeshBasicMaterial({ color: "black" })
+        new THREE.MeshBasicMaterial({ color: 'black' })
     );
     base.position.set(0, -0.5, 0);
     base.castShadow = true;
 
-    //init
+    // init
     for (let i = 0; i < 3; i++) {
         const TOWER = new Tower(GEOMETRY_TOWER, MATERIAL_TOWER, i);
         towers.push(TOWER);
@@ -345,24 +343,24 @@ function init() {
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
-    //restrict camera movement
+    // restrict camera movement
     controls.minAzimuthAngle = Math.PI / 2;
     controls.maxAzimuthAngle = (3 * Math.PI) / 2;
     controls.maxPolarAngle = Math.PI / 2 - 0.1;
-    //restrict camera zoom
+    // restrict camera zoom
     controls.minDistance = 20;
     controls.maxDistance = 75;
 
-    //floor
+    // floor
     const floor = new THREE.Mesh(
         new THREE.PlaneGeometry(3000, 3000),
-        new THREE.MeshPhongMaterial({ color: "gray", depthWrite: false })
+        new THREE.MeshPhongMaterial({ color: 'gray', depthWrite: false })
     );
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     floor.position.set(0, -0.5, 0);
 
-    //lights
+    // lights
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
     hemiLight.position.set(0, 20, 0);
     const dirLight = new THREE.PointLight(0xffffff, 2, 400);
@@ -372,7 +370,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
 
-    //adding elements to the scene
+    // adding elements to the scene
     scene.add(dirLight);
     scene.add(hemiLight);
     scene.add(base);
@@ -381,15 +379,15 @@ function init() {
         scene.add(towers[i].mesh);
     }
 
-    //camera settings
+    // camera settings
     camera.position.set(0, 15, -30);
     controls.update();
 
-    //add events listeners
-    window.addEventListener("pointermove", onMouseMove);
-    window.addEventListener("click", onMouseClick, false);
+    // add events listeners
+    window.addEventListener('pointermove', onMouseMove);
+    window.addEventListener('click', onMouseClick, false);
     window.addEventListener(
-        "resize",
+        'resize',
         () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
