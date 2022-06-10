@@ -1,10 +1,10 @@
 const EXPRESS = require("express");
 const path = require("path");
 const app = EXPRESS();
-app.use("/", EXPRESS.static(path.join(__dirname, "2d/drag-and-drop/public")));
+app.use("/", EXPRESS.static(path.join(__dirname, "threejs/public")));
 
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "./2d/drag-and-drop/public/index.html");
+    res.sendFile(__dirname + "./threejs/public/index.html");
 });
 
 app.listen(3000, () => {
