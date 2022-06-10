@@ -351,14 +351,56 @@ function init() {
     controls.minDistance = 20;
     controls.maxDistance = 75;
 
-    // floor
-    const floor = new THREE.Mesh(
-        new THREE.PlaneGeometry(3000, 3000),
-        new THREE.MeshPhongMaterial({ color: 'gray', depthWrite: false })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true;
-    floor.position.set(0, -0.5, 0);
+    // // floor
+    // const floor = new THREE.Mesh(
+    //     new THREE.PlaneGeometry(3000, 3000),
+    //     new THREE.MeshPhongMaterial({ color: 'gray', depthWrite: false })
+    // );
+    // floor.rotation.x = -Math.PI / 2;
+    // floor.receiveShadow = true;
+    // floor.position.set(0, -0.5, 0);
+    const floorMat = new THREE.MeshStandardMaterial({
+        roughness: 0.8,
+        color: 0xffffff,
+        metalness: 0.2,
+        bumpScale: 0.0005
+    });
+
+    const textureLoader = new THREE.TextureLoader();
+
+    textureLoader.load('../images/hardwood2_diffuse.jpg', function (map) {
+        map.wrapS = THREE.RepeatWrapping;
+        map.wrapT = THREE.RepeatWrapping;
+        map.anisotropy = 4;
+        map.repeat.set(10, 24);
+        map.encoding = THREE.sRGBEncoding;
+        floorMat.map = map;
+        floorMat.needsUpdate = true;
+    });
+    textureLoader.load('../images/hardwood2_bump.jpg', function (map) {
+        map.wrapS = THREE.RepeatWrapping;
+        map.wrapT = THREE.RepeatWrapping;
+        map.anisotropy = 4;
+        map.repeat.set(10, 24);
+        floorMat.bumpMap = map;
+        floorMat.needsUpdate = true;
+    });
+    textureLoader.load('../images/hardwood2_roughness.jpg', function (map) {
+        map.wrapS = THREE.RepeatWrapping;
+        map.wrapT = THREE.RepeatWrapping;
+        map.anisotropy = 4;
+        map.repeat.set(10, 24);
+        floorMat.roughnessMap = map;
+        floorMat.needsUpdate = true;
+    });
+
+    const floorGeometry = new THREE.PlaneGeometry(2000, 2000);
+    const floorMesh = new THREE.Mesh(floorGeometry, floorMat);
+    floorMesh.receiveShadow = true;
+    floorMesh.rotation.x = -Math.PI / 2.0;
+    floorMesh.receiveShadow = true;
+    floorMesh.position.set(0, -0.5, 0);
+    scene.add(floorMesh);
 
     // lights
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
@@ -374,7 +416,6 @@ function init() {
     scene.add(dirLight);
     scene.add(hemiLight);
     scene.add(base);
-    scene.add(floor);
     for (let i = 0; i < 3; i++) {
         scene.add(towers[i].mesh);
     }

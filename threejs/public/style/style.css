@@ -10,6 +10,9 @@ input {
     position: absolute;
     top: 0;
     left: 55px;
+}
+
+#won {
     display: none;
 }
 
@@ -46,7 +49,7 @@ body {
     bottom: 0;
 }
 
-#title{
+#title {
     position: absolute;
     color: black;
     /* center in x axis */
