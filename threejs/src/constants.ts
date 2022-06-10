@@ -15,3 +15,4 @@ export const MAX_DISK_HEIGHT = 2;
 export const DISK_GAP = 0.125;
 export const TOWER_GAP = 18;
 export const HANOI = new Hanoi();
+export const IMAGE_PATH = 'tower-of-hanoi/threejs/public/images/';

@@ -13,7 +13,8 @@ import {
     GEOMETRY_TOWER,
     MATERIAL_TOWER,
     HANOI,
-    CANCEL
+    CANCEL,
+    IMAGE_PATH
 } from './constants';
 
 let selectedDisk: Disk | null;
@@ -406,8 +407,7 @@ function init() {
     });
 
     const textureLoader = new THREE.TextureLoader();
-    console.log(__dirname);
-    textureLoader.load(__dirname + 'images/hardwood2_diffuse.jpg', function (map) {
+    textureLoader.load(__dirname + IMAGE_PATH + 'hardwood2_diffuse.jpg', function (map) {
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
@@ -416,7 +416,7 @@ function init() {
         floorMat.map = map;
         floorMat.needsUpdate = true;
     });
-    textureLoader.load(__dirname + 'images/hardwood2_bump.jpg', function (map) {
+    textureLoader.load(__dirname + IMAGE_PATH + 'hardwood2_bump.jpg', function (map) {
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
@@ -424,7 +424,7 @@ function init() {
         floorMat.bumpMap = map;
         floorMat.needsUpdate = true;
     });
-    textureLoader.load(__dirname + 'images/hardwood2_roughness.jpg', function (map) {
+    textureLoader.load(__dirname + IMAGE_PATH + 'hardwood2_roughness.jpg', function (map) {
         map.wrapS = THREE.RepeatWrapping;
         map.wrapT = THREE.RepeatWrapping;
         map.anisotropy = 4;
