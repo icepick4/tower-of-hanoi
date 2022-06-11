@@ -10,13 +10,31 @@ input {
     position: absolute;
     top: 0;
     left: 55px;
-    display: none;
 }
 
 #cancel {
     position: absolute;
     top: 60px;
     left: 0;
+}
+
+#title {
+    position: absolute;
+    color: black;
+    /* center in x axis */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
+#reset-cam {
+    position: absolute;
+    top: 80px;
+    left: 0;
+}
+
+#won {
+    display: none;
 }
 
 h2 {
@@ -44,13 +62,4 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-}
-
-#title{
-    position: absolute;
-    color: black;
-    /* center in x axis */
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 20px;
 }

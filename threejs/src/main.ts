@@ -13,7 +13,8 @@ import {
     GEOMETRY_TOWER,
     MATERIAL_TOWER,
     HANOI,
-    CANCEL
+    CANCEL,
+    RESET_CAM
 } from "./constants";
 
 let selectedDisk: Disk | null;
@@ -44,6 +45,12 @@ BTN_PLAY.addEventListener("click", () => {
         }
     }
 });
+
+RESET_CAM.addEventListener("click", () => {
+    camera.position.set(0, 15, -30);
+    camera.lookAt(0, 0, 0);
+});
+
 CANCEL.addEventListener("click", cancelLastMove);
 
 init();
@@ -395,7 +402,6 @@ function init() {
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             render();
-            console.log(xSpeed);
         },
         false
     );
