@@ -15,7 +15,7 @@ import {
     HANOI,
     CANCEL,
     RESET_CAM,
-    IMAGE_PATH,
+    IMAGE_PATH
 } from './constants';
 
 let selectedDisk: Disk | null;
@@ -86,7 +86,7 @@ function raycasting(click: boolean) {
         for (const disk of disks) {
             if (disk.mesh !== mesh && disk !== selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({
-                    color: disk.color,
+                    color: disk.color
                 });
             } else {
                 let diskAtTop = false;
@@ -107,16 +107,16 @@ function raycasting(click: boolean) {
                 // check is the disk is on the top of the tower with his index
                 if (diskAtTop) {
                     disk.mesh.material = new THREE.MeshPhongMaterial({
-                        color: 'green',
+                        color: 'green'
                     });
                 } else {
                     disk.mesh.material = new THREE.MeshPhongMaterial({
-                        color: 'rgb(65,65,65)',
+                        color: 'rgb(65,65,65)'
                     });
                 }
                 if (disk === selectedDisk) {
                     disk.mesh.material = new THREE.MeshPhongMaterial({
-                        color: disk.color,
+                        color: disk.color
                     });
                 }
             }
@@ -148,7 +148,7 @@ function raycasting(click: boolean) {
                 }
                 if (selectedDisk != null) {
                     tower.mesh.material = new THREE.MeshPhongMaterial({
-                        color: 'rgb(160,160,160)',
+                        color: 'rgb(160,160,160)'
                     });
                 }
             }
@@ -157,7 +157,7 @@ function raycasting(click: boolean) {
         for (const disk of disks) {
             if (disk !== selectedDisk) {
                 disk.mesh.material = new THREE.MeshPhongMaterial({
-                    color: disk.color,
+                    color: disk.color
                 });
             }
         }
@@ -341,7 +341,7 @@ function initDisks(n: number) {
                 FACES
             ),
             new THREE.MeshPhongMaterial({
-                color: rgb,
+                color: rgb
             }),
             rgb,
             i,
@@ -418,7 +418,7 @@ function init() {
         roughness: 0.8,
         color: 0xffffff,
         metalness: 0.2,
-        bumpScale: 0.0005,
+        bumpScale: 0.0005
     });
 
     const textureLoader = new THREE.TextureLoader();
