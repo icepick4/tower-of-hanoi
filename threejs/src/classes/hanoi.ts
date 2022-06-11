@@ -1,6 +1,8 @@
-import { Disk } from "./disk";
-import { CANCEL, WON } from "../constants";
+import { Disk } from './disk';
+import { CANCEL, WON } from '../constants';
 
+/* It's a class that represents a game of Hanoi, with a few methods to move disks, check if a move is
+valid, and reset the game. */
 export class Hanoi {
     n: number;
     towers: Array<Array<Disk>>;
@@ -10,8 +12,8 @@ export class Hanoi {
     constructor() {
         this.towers = [];
         for (let i = 0; i < 3; i++) {
-            const disk_array: Array<Disk> = [];
-            this.towers.push(disk_array);
+            const diskArray: Array<Disk> = [];
+            this.towers.push(diskArray);
         }
         this.moves = 0;
         this.solved = false;
@@ -20,9 +22,9 @@ export class Hanoi {
     }
 
     canMove(from: number, to: number) {
-        if (this.towers[from].length == 0) {
+        if (this.towers[from].length === 0) {
             return false;
-        } else if (this.towers[to].length == 0) {
+        } else if (this.towers[to].length === 0) {
             return true;
         } else {
             return (
@@ -39,18 +41,16 @@ export class Hanoi {
                 this.move(lastMove[1], lastMove[0], true);
             }
         }
-        console.log("je cancel");
-        CANCEL.classList.remove("over-underline");
-        CANCEL.classList.add("grey");
+        CANCEL.classList.remove('over-underline');
+        CANCEL.classList.add('grey');
     }
 
     move(from: number, to: number, revert: boolean) {
-        console.log("from : " + from + " to : " + to);
         const disk = this.towers[from].pop() as Disk;
         this.towers[to].push(disk);
-        if (this.towers[2].length == this.n) {
+        if (this.towers[2].length === this.n) {
             this.solved = true;
-            WON.innerHTML = "You won in " + this.moves.toString() + " moves!";
+            WON.innerHTML = 'You won in ' + this.moves.toString() + ' moves!';
         }
         if (!revert) {
             this.lastsMoves.push([from, to]);
@@ -58,12 +58,12 @@ export class Hanoi {
                 this.lastsMoves.shift();
             }
             if (this.lastsMoves.length > 0) {
-                CANCEL.classList.add("over-underline");
-                CANCEL.classList.remove("grey");
+                CANCEL.classList.add('over-underline');
+                CANCEL.classList.remove('grey');
             }
             this.moves++;
         }
-        WON.innerHTML = "Moves : " + this.moves.toString();
+        WON.innerHTML = 'Moves : ' + this.moves.toString();
     }
 
     init(disks: Array<Disk>) {
@@ -76,8 +76,8 @@ export class Hanoi {
     reset() {
         this.towers = [];
         for (let i = 0; i < 3; i++) {
-            const disk_array: Array<Disk> = [];
-            this.towers.push(disk_array);
+            const diskArray: Array<Disk> = [];
+            this.towers.push(diskArray);
         }
         this.moves = 0;
         this.solved = false;

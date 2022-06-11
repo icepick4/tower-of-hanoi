@@ -45,7 +45,7 @@
   align-items: flex-start;
 }
 
-#DROP_AREA0 {
+#DROP-AREA-0 {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -55,7 +55,7 @@
   z-index: 1;
 }
 
-#DROP_AREA1 {
+#DROP-AREA-1 {
   position: absolute;
   bottom: 0;
   left: 33%;
@@ -65,7 +65,7 @@
   z-index: 1;
 }
 
-#DROP_AREA2 {
+#DROP-AREA-2 {
   position: absolute;
   bottom: 0;
   left: 66%;
