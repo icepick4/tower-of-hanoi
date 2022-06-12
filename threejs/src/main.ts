@@ -14,6 +14,7 @@ import {
     MATERIAL_TOWER,
     HANOI,
     CANCEL,
+    RESET_CAM,
     IMAGE_PATH
 } from './constants';
 
@@ -45,6 +46,12 @@ BTN_PLAY.addEventListener('click', () => {
         }
     }
 });
+
+RESET_CAM.addEventListener('click', () => {
+    camera.position.set(0, 15, -30);
+    camera.lookAt(0, 0, 0);
+});
+
 CANCEL.addEventListener('click', cancelLastMove);
 
 init();
@@ -84,8 +91,9 @@ function raycasting(click: boolean) {
             } else {
                 let diskAtTop = false;
                 diskAtTop =
-                    HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1] ===
-                    disk;
+                    HANOI.towers[disk.col][
+                        HANOI.towers[disk.col].length - 1
+                    ] === disk;
                 // console.log(HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1].col);
                 if (
                     click &&
@@ -293,21 +301,21 @@ function cancelLastMove() {
 
 /**
  * `initDisks` creates a set of disks with random colors and adds them to the scene.
- * 
+ *
  * The function takes a single argument, `n`, which is the number of disks to create.
- * 
+ *
  * The first thing the function does is create a loop that runs `n` times.
- * 
+ *
  * On each iteration of the loop, the function creates a random color and uses it to create a new disk.
- * 
- * 
+ *
+ *
  * The disk's radius is calculated by subtracting the current iteration number from `n` and adding
  * `0.5`.
- * 
+ *
  * The disk's height is calculated by subtracting `DISK_GAP * n` from `MAX_DISK_HEIGHT`.
- * 
+ *
  * The disk is then added to the `disks` array and the scene.
- * 
+ *
  * Once the loop is finished, the `HANOI.init` function is called.
  * @param {number} n - number of disks
  */
@@ -316,7 +324,14 @@ function initDisks(n: number) {
         const r = Math.floor(Math.random() * 255);
         const g = Math.floor(Math.random() * 255);
         const b = Math.floor(Math.random() * 255);
-        const rgb = 'rgb(' + r.toString() + ',' + g.toString() + ',' + b.toString() + ')';
+        const rgb =
+            'rgb(' +
+            r.toString() +
+            ',' +
+            g.toString() +
+            ',' +
+            b.toString() +
+            ')';
         const radius = n - i + 0.5;
         const disk = new Disk(
             new THREE.CylinderGeometry(
@@ -407,31 +422,40 @@ function init() {
     });
 
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(__dirname + IMAGE_PATH + 'hardwood2_diffuse.jpg', function (map) {
-        map.wrapS = THREE.RepeatWrapping;
-        map.wrapT = THREE.RepeatWrapping;
-        map.anisotropy = 4;
-        map.repeat.set(10, 24);
-        map.encoding = THREE.sRGBEncoding;
-        floorMat.map = map;
-        floorMat.needsUpdate = true;
-    });
-    textureLoader.load(__dirname + IMAGE_PATH + 'hardwood2_bump.jpg', function (map) {
-        map.wrapS = THREE.RepeatWrapping;
-        map.wrapT = THREE.RepeatWrapping;
-        map.anisotropy = 4;
-        map.repeat.set(10, 24);
-        floorMat.bumpMap = map;
-        floorMat.needsUpdate = true;
-    });
-    textureLoader.load(__dirname + IMAGE_PATH + 'hardwood2_roughness.jpg', function (map) {
-        map.wrapS = THREE.RepeatWrapping;
-        map.wrapT = THREE.RepeatWrapping;
-        map.anisotropy = 4;
-        map.repeat.set(10, 24);
-        floorMat.roughnessMap = map;
-        floorMat.needsUpdate = true;
-    });
+    textureLoader.load(
+        __dirname + IMAGE_PATH + 'hardwood2_diffuse.jpg',
+        function (map) {
+            map.wrapS = THREE.RepeatWrapping;
+            map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 4;
+            map.repeat.set(10, 24);
+            map.encoding = THREE.sRGBEncoding;
+            floorMat.map = map;
+            floorMat.needsUpdate = true;
+        }
+    );
+    textureLoader.load(
+        __dirname + IMAGE_PATH + 'hardwood2_bump.jpg',
+        function (map) {
+            map.wrapS = THREE.RepeatWrapping;
+            map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 4;
+            map.repeat.set(10, 24);
+            floorMat.bumpMap = map;
+            floorMat.needsUpdate = true;
+        }
+    );
+    textureLoader.load(
+        __dirname + IMAGE_PATH + 'hardwood2_roughness.jpg',
+        function (map) {
+            map.wrapS = THREE.RepeatWrapping;
+            map.wrapT = THREE.RepeatWrapping;
+            map.anisotropy = 4;
+            map.repeat.set(10, 24);
+            floorMat.roughnessMap = map;
+            floorMat.needsUpdate = true;
+        }
+    );
 
     const floorGeometry = new THREE.PlaneGeometry(2000, 2000);
     const floorMesh = new THREE.Mesh(floorGeometry, floorMat);
@@ -473,7 +497,6 @@ function init() {
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             render();
-            console.log(xSpeed);
         },
         false
     );

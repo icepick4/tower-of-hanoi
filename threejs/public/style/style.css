@@ -12,14 +12,29 @@ input {
     left: 55px;
 }
 
-#won {
-    display: none;
-}
-
 #cancel {
     position: absolute;
     top: 60px;
     left: 0;
+}
+
+#title {
+    position: absolute;
+    color: black;
+    /* center in x axis */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
+#reset-cam {
+    position: absolute;
+    top: 80px;
+    left: 0;
+}
+
+#won {
+    display: none;
 }
 
 h2 {
