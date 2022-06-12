@@ -91,5 +91,6 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "exclude": [
+        "./threjs", "./2d/click-to-select"
     ]
 }

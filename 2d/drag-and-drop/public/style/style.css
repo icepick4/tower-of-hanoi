@@ -100,3 +100,34 @@ body {
   transform: translateX(-50%);
   font-size: 20px;
 }
+
+.links {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  align-items: center;
+  margin: 10px;
+}
+
+.links>a {
+  margin-right: 20px;
+}
+
+.links p:hover {
+  text-decoration: underline;
+}
+
+.links img:hover {
+  -webkit-filter: grayscale(0);
+  filter: grayscale(0);
+}
+
+.links img {
+  width: 40px;
+  height: 40px;
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  -webkit-transition: .15s ease-in-out;
+  transition: .15s ease-in-out;
+}
