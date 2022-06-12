@@ -17,7 +17,7 @@
 
 (« Tower of Hanoi » 2022).
 
-Bibliography : Tower of Hanoi. (12th April, 2022). In ​Wikipedia​. [https://fr.wikipedia.org/wiki/%C3%89cologie_politique](https://en.wikipedia.org/wiki/Tower_of_Hanoi)
+Bibliography : Tower of Hanoi. (12th April, 2022). In ​Wikipedia​. [https://en.wikipedia.org/wiki/Tower_of_Hanoi](https://en.wikipedia.org/wiki/Tower_of_Hanoi)
 
 ## Playing
 
