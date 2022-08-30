@@ -54,12 +54,14 @@ RESET_CAM.addEventListener('click', () => {
 
 CANCEL.addEventListener('click', cancelLastMove);
 
-init();
+initScene();
 render();
 
 function render() {
     window.requestAnimationFrame(render);
-    raycasting(false);
+    if (!HANOI.solved) {
+        raycasting(false);
+    }
     if (movingTop && selectedDisk != null) {
         moveTop(selectedDisk);
     } else if (movingCol != null && selectedDisk != null) {
@@ -75,7 +77,9 @@ function onMouseMove(event: MouseEvent) {
 }
 
 function onMouseClick() {
-    raycasting(true);
+    if (!HANOI.solved) {
+        raycasting(true);
+    }
 }
 
 function raycasting(click: boolean) {
@@ -94,7 +98,6 @@ function raycasting(click: boolean) {
                     HANOI.towers[disk.col][
                         HANOI.towers[disk.col].length - 1
                     ] === disk;
-                // console.log(HANOI.towers[disk.col][HANOI.towers[disk.col].length - 1].col);
                 if (
                     click &&
                     diskAtTop &&
@@ -222,7 +225,7 @@ function moveCol(disk: Disk, tower: Tower) {
             } else {
                 disk.mesh.position.y = distanceY;
                 movingCol = null;
-                if (selectedDisk != null && canPlace) {
+                if (selectedDisk != null && canPlace && !HANOI.solved) {
                     HANOI.move(selectedDisk.col, tower.index, false);
                     disk.col = tower.index;
                 }
@@ -369,7 +372,7 @@ function resetGamePlay() {
     WON.innerHTML = 'Moves : 0';
 }
 
-function init() {
+function initScene() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
         75,

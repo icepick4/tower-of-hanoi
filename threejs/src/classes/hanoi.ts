@@ -48,10 +48,7 @@ export class Hanoi {
     move(from: number, to: number, revert: boolean) {
         const disk = this.towers[from].pop() as Disk;
         this.towers[to].push(disk);
-        if (this.towers[2].length === this.n) {
-            this.solved = true;
-            WON.innerHTML = 'You won in ' + this.moves.toString() + ' moves!';
-        }
+
         if (!revert) {
             this.lastsMoves.push([from, to]);
             if (this.lastsMoves.length > 1) {
@@ -63,7 +60,14 @@ export class Hanoi {
             }
             this.moves++;
         }
-        WON.innerHTML = 'Moves : ' + this.moves.toString();
+        if (this.towers[2].length === this.n) {
+            this.solved = true;
+            WON.innerHTML = 'You won in ' + this.moves.toString() + ' moves!';
+            this.moves = 0;
+        }
+        if (this.moves !== 0) {
+            WON.innerHTML = 'Moves : ' + this.moves.toString();
+        }
     }
 
     init(disks: Array<Disk>) {

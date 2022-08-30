@@ -20,19 +20,19 @@ for (let i = 0; i < TOWERS.length; i++) {
 /**
  * "If the background color of the clicked element is blue, change it to black, otherwise change it to
  * blue."
- * 
+ *
  * The first line of the function is a TypeScript annotation. It tells TypeScript that the function
  * will be called with a `this` argument that is an `HTMLElement` and an `ev` argument that is a
  * `MouseEvent`. This is important because TypeScript will check that the function is called with the
  * correct arguments.
- * 
+ *
  * The second line of the function gets the background color of the clicked element.
- * 
+ *
  * The third line gets the number of the picture that was clicked.
- * 
+ *
  * The fourth line checks the background color of the clicked element. If it is blue, the background
  * color is changed to black. Otherwise, the background color is changed to blue.
- * 
+ *
  * The fifth line calls the `move` function.
  * @param {HTMLElement}  - HTMLElement - this is the type of the first parameter, which is the element
  * that was clicked.
@@ -69,7 +69,8 @@ function mouseOut(this: HTMLElement) {
 window.addEventListener('resize', function () {
     hanoi.draw();
     for (let i = 0; i < TOWERS.length; i++) {
-        TOWERS[i].style.width = (document.body.clientWidth / 50).toString() + 'px';
+        TOWERS[i].style.width =
+            (document.body.clientWidth / 50).toString() + 'px';
     }
 });
 
@@ -83,7 +84,7 @@ function move(col: number) {
         hanoi.setClicked(col);
     } else {
         unselectAll();
-        if (hanoi.can_move(hanoi.clicked1, col)) {
+        if (hanoi.can_move(hanoi.clicked1, col) && !hanoi.solved) {
             hanoi.move(hanoi.clicked1, col, false);
             hanoi.draw();
         }
@@ -110,25 +111,25 @@ function unselectAll() {
 }
 
 /**
- * The function play() is called when the user clicks the "Play" button. 
- * 
- * The function play() does the following: 
- * 
- * 1. It sets the display property of the div with id "won" to "block". 
- * 
- * 2. It sets the variable PLAYING to true. 
- * 
- * 3. It clears the div with id "disks". 
- * 
- * 4. It calls the function unselectAll(). 
- * 
- * 5. It sets the innerHTML of the div with id "won" to "Moves : 0". 
- * 
- * 6. It checks if the variable INPUT is not null. 
- * 
+ * The function play() is called when the user clicks the "Play" button.
+ *
+ * The function play() does the following:
+ *
+ * 1. It sets the display property of the div with id "won" to "block".
+ *
+ * 2. It sets the variable PLAYING to true.
+ *
+ * 3. It clears the div with id "disks".
+ *
+ * 4. It calls the function unselectAll().
+ *
+ * 5. It sets the innerHTML of the div with id "won" to "Moves : 0".
+ *
+ * 6. It checks if the variable INPUT is not null.
+ *
  * 7. If the variable INPUT is not null, it gets the value of the input element with id "input" and
- * converts it to a number. 
- * 
+ * converts it to a number.
+ *
  * 8. Then the game is started with the number of disks in the input element.
  */
 function play() {
@@ -201,7 +202,10 @@ class Hanoi {
         } else if (this.towers[to].length === 0) {
             return true;
         } else {
-            return this.towers[from][this.towers[from].length - 1] < this.towers[to][this.towers[to].length - 1];
+            return (
+                this.towers[from][this.towers[from].length - 1] <
+                this.towers[to][this.towers[to].length - 1]
+            );
         }
     }
 
@@ -209,11 +213,6 @@ class Hanoi {
         this.towers[to].push(this.towers[from].pop() as number);
         this.moves++;
         WON.innerHTML = 'Moves : ' + this.moves.toString();
-        if (this.towers[2].length === this.n) {
-            this.solved = true;
-            // display #won 
-            WON.innerHTML = 'You won in ' + this.moves.toString() + ' moves!';
-        }
         if (!revert) {
             this.lastsMoves.push([from, to]);
             if (this.lastsMoves.length > 1) {
@@ -223,6 +222,12 @@ class Hanoi {
                 CANCEL.classList.add('over-underline');
                 CANCEL.classList.remove('grey');
             }
+        }
+        if (this.towers[2].length === this.n) {
+            this.solved = true;
+            // display #won
+            WON.innerHTML = 'You won in ' + this.moves.toString() + ' moves!';
+            this.moves = 0;
         }
     }
 
@@ -234,30 +239,39 @@ class Hanoi {
                     'disk_' + this.towers[i][j].toString()
                 ) as HTMLElement;
                 div.style.bottom =
-                    ((j * document.body.clientWidth) / 33.333 + 30 - 10).toString() + 'px';
+                    (
+                        (j * document.body.clientWidth) / 33.333 +
+                        30 -
+                        10
+                    ).toString() + 'px';
                 div.style.width =
-                    ((document.body.clientWidth * this.towers[i][j]) / 25 +
-                        10).toString() +
-                    'px';
-                div.style.height = (document.body.clientWidth / 33.333).toString() + 'px';
+                    (
+                        (document.body.clientWidth * this.towers[i][j]) / 25 +
+                        10
+                    ).toString() + 'px';
+                div.style.height =
+                    (document.body.clientWidth / 33.333).toString() + 'px';
                 if (i === 0) {
                     div.style.left =
-                        (document.body.clientWidth / 6 -
+                        (
+                            document.body.clientWidth / 6 -
                             div.offsetWidth / 2 +
-                            TOWERS[0].offsetWidth / 2).toString() +
-                        'px';
+                            TOWERS[0].offsetWidth / 2
+                        ).toString() + 'px';
                 } else if (i === 1) {
                     div.style.left =
-                        (document.body.clientWidth / 2 -
+                        (
+                            document.body.clientWidth / 2 -
                             div.offsetWidth / 2 +
-                            TOWERS[1].offsetWidth / 2).toString() +
-                        'px';
+                            TOWERS[1].offsetWidth / 2
+                        ).toString() + 'px';
                 } else {
                     div.style.left =
-                        (document.body.clientWidth / 1.25 -
+                        (
+                            document.body.clientWidth / 1.25 -
                             div.offsetWidth / 2 +
-                            TOWERS[2].offsetWidth / 2).toString() +
-                        'px';
+                            TOWERS[2].offsetWidth / 2
+                        ).toString() + 'px';
                 }
             }
         }
@@ -270,7 +284,8 @@ function initDiv(div: HTMLElement, n: number, i: number, str: string) {
     const r = Math.floor(Math.random() * 255);
     const g = Math.floor(Math.random() * 255);
     const b = Math.floor(Math.random() * 255);
-    div.style.backgroundColor = 'rgb(' + r.toString() + ', ' + g.toString() + ', ' + b.toString() + ')';
+    div.style.backgroundColor =
+        'rgb(' + r.toString() + ', ' + g.toString() + ', ' + b.toString() + ')';
     div.style.border = '1px solid black';
 
     div.style.width =

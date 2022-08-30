@@ -20,7 +20,8 @@ window.addEventListener('resize', function () {
         hanoi.draw();
     }
     for (let i = 0; i < TOWERS_AREAS.length; i++) {
-        TOWERS_AREAS[i].style.width = (document.body.clientWidth / 50).toString() + 'px';
+        TOWERS_AREAS[i].style.width =
+            (document.body.clientWidth / 50).toString() + 'px';
     }
 });
 
@@ -48,18 +49,18 @@ function setEvents() {
 /**
  * "If the user is dragging a disk, and the mouse is over a tower, and the disk is at the top of the
  * tower, and the disk can be moved to the tower, then highlight the tower."
- * 
- * The function is called whenever the mouse moves. 
- * 
- * The first thing it does is check if the user is dragging a disk. If not, it returns. 
- * 
+ *
+ * The function is called whenever the mouse moves.
+ *
+ * The first thing it does is check if the user is dragging a disk. If not, it returns.
+ *
  * The next thing it does is get the tower the mouse is over. If the mouse is not over a tower, it
- * returns. 
- * 
- * The next thing it does is check if the disk is at the top of the tower. If not, it returns. 
- * 
- * The next thing it does is check if the disk can be moved to the tower. If not, it returns. 
- * 
+ * returns.
+ *
+ * The next thing it does is check if the disk is at the top of the tower. If not, it returns.
+ *
+ * The next thing it does is check if the disk can be moved to the tower. If not, it returns.
+ *
  * If the user is dragging a disk, and the mouse is over a tower, and the disk is
  * @param {DragEvent} ev - DragEvent - the event that is being handled
  */
@@ -75,7 +76,11 @@ function allowDrop(ev: DragEvent) {
         // id equald last char of id
         const col = Number(id.substring(id.length - 1));
         for (let i = 0; i < TOWERS_AREAS.length; i++) {
-            if (TOWERS_AREAS[i].id === 'pic-area-' + col.toString() && hanoi.can_move(startDragCol, i) && diskAtTop) {
+            if (
+                TOWERS_AREAS[i].id === 'pic-area-' + col.toString() &&
+                hanoi.can_move(startDragCol, i) &&
+                diskAtTop
+            ) {
                 TOWERS_AREAS[i].style.backgroundColor = 'purple';
             } else {
                 TOWERS_AREAS[i].style.backgroundColor = 'black';
@@ -85,14 +90,14 @@ function allowDrop(ev: DragEvent) {
 }
 
 /**
- * The function drop() is called when the user drops a disk on a tower. 
- * 
- * The function first prevents the default action of the browser from happening. 
- * 
- * Then it gets the id of the tower where the disk was dropped. 
- * 
- * Then it calls the move() function to move the disk to the tower. 
- * 
+ * The function drop() is called when the user drops a disk on a tower.
+ *
+ * The function first prevents the default action of the browser from happening.
+ *
+ * Then it gets the id of the tower where the disk was dropped.
+ *
+ * Then it calls the move() function to move the disk to the tower.
+ *
  * Finally, it changes the background color of the towers back to black.
  * @param {DragEvent} ev - DragEvent - the event that is triggered when the user drags the element.
  */
@@ -112,17 +117,17 @@ function drop(ev: DragEvent) {
 /**
  * "When a disk is clicked, set the opacity to 0.75, set the border to dashed, and set the startDragCol
  * and startDragDisk variables to the column and disk that was clicked."
- * 
+ *
  * The first line of the function is a TypeScript annotation. It tells TypeScript that the this
  * parameter is of type HTMLElement. This is necessary because the this parameter is not a parameter of
  * the function, but rather a parameter of the addEventListener function.
- * 
+ *
  * The next line sets the opacity of the disk to 0.75. This is done so that the user can see which disk
  * is being dragged.
- * 
+ *
  * The next line sets the border of the disk to dashed. This is done so that the user can see which
  * disk is being dragged.
- * 
+ *
  * The next line gets the disk number from the id of the disk. The id of the disk is in the form
  * "disk1", "
  * @param {HTMLElement}  - this: HTMLElement - this is the element that is being dragged.
@@ -160,7 +165,7 @@ function move(col: number) {
     const diskAtTop =
         hanoi.towers[startDragCol][hanoi.towers[startDragCol].length - 1] ===
         startDragDisk;
-    if (hanoi.can_move(startDragCol, col) && diskAtTop) {
+    if (hanoi.can_move(startDragCol, col) && diskAtTop && !hanoi.solved) {
         hanoi.move(startDragCol, col, false);
         hanoi.draw();
     }
@@ -256,7 +261,9 @@ class Hanoi {
         if (this.lastsMoves.length > 0) {
             const lastMove = this.lastsMoves.pop();
             if (lastMove != null) {
-                this.move(lastMove[1], lastMove[0], true);
+                if (!this.solved) {
+                    this.move(lastMove[1], lastMove[0], true);
+                }
             }
         }
         this.draw();
@@ -270,12 +277,6 @@ class Hanoi {
         TOWERS[to].appendChild(lastChild);
 
         this.towers[to].push(this.towers[from].pop() as number);
-
-        if (this.towers[2].length === this.n) {
-            this.solved = true;
-            // display #won
-            WON.innerHTML = 'You won in ' + this.moves.toString() + ' moves!';
-        }
         if (!revert) {
             this.lastsMoves.push([from, to]);
             if (this.lastsMoves.length > 1) {
@@ -287,7 +288,15 @@ class Hanoi {
             }
             this.moves++;
         }
-        WON.innerHTML = 'Moves : ' + this.moves.toString();
+        if (this.towers[2].length === this.n) {
+            this.solved = true;
+            // display #won
+            WON.innerHTML = 'You won in ' + this.moves.toString() + ' moves!';
+            this.moves = 0;
+        }
+        if (this.moves !== 0) {
+            WON.innerHTML = 'Moves : ' + this.moves.toString();
+        }
     }
 
     draw() {
@@ -298,30 +307,39 @@ class Hanoi {
                     'disk_' + this.towers[i][j].toString()
                 ) as HTMLElement;
                 div.style.bottom =
-                    ((j * document.body.clientWidth) / 33.333 + 30 - 10).toString() + 'px';
+                    (
+                        (j * document.body.clientWidth) / 33.333 +
+                        30 -
+                        10
+                    ).toString() + 'px';
                 div.style.width =
-                    ((document.body.clientWidth * this.towers[i][j]) / 25 +
-                        10).toString() +
-                    'px';
-                div.style.height = (document.body.clientWidth / 33.333).toString() + 'px';
+                    (
+                        (document.body.clientWidth * this.towers[i][j]) / 25 +
+                        10
+                    ).toString() + 'px';
+                div.style.height =
+                    (document.body.clientWidth / 33.333).toString() + 'px';
                 if (i === 0) {
                     div.style.left =
-                        (document.body.clientWidth / 6 -
+                        (
+                            document.body.clientWidth / 6 -
                             div.offsetWidth / 2 +
-                            TOWERS_AREAS[0].offsetWidth / 2).toString() +
-                        'px';
+                            TOWERS_AREAS[0].offsetWidth / 2
+                        ).toString() + 'px';
                 } else if (i === 1) {
                     div.style.left =
-                        (document.body.clientWidth / 2 -
+                        (
+                            document.body.clientWidth / 2 -
                             div.offsetWidth / 2 +
-                            TOWERS_AREAS[1].offsetWidth / 2).toString() +
-                        'px';
+                            TOWERS_AREAS[1].offsetWidth / 2
+                        ).toString() + 'px';
                 } else {
                     div.style.left =
-                        (document.body.clientWidth / 1.25 -
+                        (
+                            document.body.clientWidth / 1.25 -
                             div.offsetWidth / 2 +
-                            TOWERS_AREAS[2].offsetWidth / 2).toString() +
-                        'px';
+                            TOWERS_AREAS[2].offsetWidth / 2
+                        ).toString() + 'px';
                 }
             }
         }
@@ -334,7 +352,8 @@ function initDiv(div: HTMLElement, n: number, i: number, str: string) {
     const r = Math.floor(Math.random() * 255);
     const g = Math.floor(Math.random() * 255);
     const b = Math.floor(Math.random() * 255);
-    div.style.backgroundColor = 'rgb(' + r.toString() + ', ' + g.toString() + ', ' + b.toString() + ')';
+    div.style.backgroundColor =
+        'rgb(' + r.toString() + ', ' + g.toString() + ', ' + b.toString() + ')';
     div.style.border = '1px solid black';
 
     div.style.width =
