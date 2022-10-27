@@ -89,8 +89,29 @@ body {
 }
 
 .links img:hover {
-    -webkit-filter: grayscale(0);
-    filter: grayscale(0);
+    opacity: 1;
+    -webkit-animation: flash 0.3s;
+    animation: flash 0.3s;
+}
+
+@-webkit-keyframes flash {
+    0% {
+        scale: 1.2;
+    }
+
+    100% {
+        scale: 1;
+    }
+}
+
+@keyframes flash {
+    0% {
+        scale: 1.2;
+    }
+
+    100% {
+        scale: 1;
+    }
 }
 
 .links img {
