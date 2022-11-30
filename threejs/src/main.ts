@@ -1,21 +1,21 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Tower } from './classes/tower';
 import { Disk } from './classes/disk';
+import { Tower } from './classes/tower';
 import {
-    MAX_DISK_HEIGHT,
-    TOWER_GAP,
     BTN_PLAY,
+    CANCEL,
     DISK_GAP,
-    INPUT,
-    WON,
     FACES,
     GEOMETRY_TOWER,
-    MATERIAL_TOWER,
     HANOI,
-    CANCEL,
+    IMAGE_PATH,
+    INPUT,
+    MATERIAL_TOWER,
+    MAX_DISK_HEIGHT,
     RESET_CAM,
-    IMAGE_PATH
+    TOWER_GAP,
+    WON
 } from './constants';
 
 let selectedDisk: Disk | null;
@@ -57,6 +57,10 @@ CANCEL.addEventListener('click', cancelLastMove);
 initScene();
 render();
 
+/**
+ * If the game isn't solved, check for mouse clicks. If the mouse is clicked, check if the user already
+ * took one, is yes move it to the column chose, if not move the disk on top.
+ */
 function render() {
     window.requestAnimationFrame(render);
     if (!HANOI.solved) {
@@ -82,6 +86,11 @@ function onMouseClick() {
     }
 }
 
+/**
+ * It checks if the user clicked on a disk or a tower, and if so, it changes the color of the disk or
+ * tower to indicate that it's been selected. If there is no click, there is a feed back on the color
+ * @param {boolean} click - boolean - true if the mouse is clicked, false otherwise
+ */
 function raycasting(click: boolean) {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObject(scene, true);
@@ -207,8 +216,6 @@ function moveCol(disk: Disk, tower: Tower) {
     }
 
     const distanceY = lenCol * disk.height - disk.height / 2;
-    // console.log({ distanceY });
-    // console.log({ lenCol });
     if (tower.index === 0) {
         if (
             disk.mesh.position.x < TOWER_GAP &&
@@ -307,19 +314,11 @@ function cancelLastMove() {
  *
  * The function takes a single argument, `n`, which is the number of disks to create.
  *
- * The first thing the function does is create a loop that runs `n` times.
- *
- * On each iteration of the loop, the function creates a random color and uses it to create a new disk.
- *
- *
  * The disk's radius is calculated by subtracting the current iteration number from `n` and adding
  * `0.5`.
  *
  * The disk's height is calculated by subtracting `DISK_GAP * n` from `MAX_DISK_HEIGHT`.
  *
- * The disk is then added to the `disks` array and the scene.
- *
- * Once the loop is finished, the `HANOI.init` function is called.
  * @param {number} n - number of disks
  */
 function initDisks(n: number) {
@@ -389,7 +388,7 @@ function initScene() {
     base.position.set(0, -0.5, 0);
     base.castShadow = true;
 
-    // init
+    // init towers
     for (let i = 0; i < 3; i++) {
         const TOWER = new Tower(GEOMETRY_TOWER, MATERIAL_TOWER, i);
         towers.push(TOWER);
@@ -409,14 +408,6 @@ function initScene() {
     controls.minDistance = 20;
     controls.maxDistance = 75;
 
-    // // floor
-    // const floor = new THREE.Mesh(
-    //     new THREE.PlaneGeometry(3000, 3000),
-    //     new THREE.MeshPhongMaterial({ color: 'gray', depthWrite: false })
-    // );
-    // floor.rotation.x = -Math.PI / 2;
-    // floor.receiveShadow = true;
-    // floor.position.set(0, -0.5, 0);
     const floorMat = new THREE.MeshStandardMaterial({
         roughness: 0.8,
         color: 0xffffff,
@@ -424,6 +415,7 @@ function initScene() {
         bumpScale: 0.0005
     });
 
+    // load textures for the floor
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(
         __dirname + IMAGE_PATH + 'hardwood2_diffuse.jpg',
