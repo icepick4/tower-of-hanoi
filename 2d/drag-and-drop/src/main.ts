@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import {
     BTN_PLAY,
+    CANCEL,
+    DROP_AREAS,
+    INPUT,
     TOWERS,
     TOWERS_AREAS,
-    INPUT,
-    WON,
-    DROP_AREAS,
-    CANCEL
+    WON
 } from './constants';
 
 let startDragCol: number;
@@ -206,7 +206,7 @@ function play() {
     WON.innerHTML = 'Moves : 0';
     if (INPUT != null) {
         const n = Number(INPUT.value);
-        if (n > 0 && n <= 7) {
+        if (n > 0 && n <= 12) {
             hanoi = new Hanoi(n);
             hanoi.draw();
         }

@@ -41,7 +41,7 @@ BTN_PLAY.addEventListener('click', () => {
     resetGamePlay();
     if (INPUT != null) {
         const n = Number(INPUT.value);
-        if (n > 0 && n <= 7) {
+        if (n > 0 && n <= 12) {
             initDisks(n);
         }
     }
